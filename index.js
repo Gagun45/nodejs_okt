@@ -7,7 +7,7 @@ const FILES_COUNT = 5;
 const logInfoByPath = async (targetPath) => {
   const stat = await fs.stat(targetPath);
   const type = stat.isFile() ? "FILE" : "FOLDER";
-  console.log(targetPath + " --- " + type);
+  console.log(`${targetPath} --- ${type}`);
 };
 
 const main = async () => {
