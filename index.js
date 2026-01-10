@@ -1,26 +1,35 @@
 const fs = require("fs/promises");
 const path = require("path");
 
-const baseFolderPath = path.join(__dirname, "baseFolder");
+const FOLDERS_COUNT = 5;
+const FILES_COUNT = 5;
 
-const foo = async () => {
+const logInfoByPath = async (targetPath) => {
+  const stat = await fs.stat(targetPath);
+  const type = stat.isFile() ? "FILE" : "FOLDER";
+  console.log(targetPath + " --- " + type);
+};
+
+const main = async () => {
+  const baseFolderPath = path.join(__dirname, "baseFolder");
   await fs.mkdir(baseFolderPath, {
     recursive: true,
   });
-  console.log(baseFolderPath);
-  for (let i = 1; i < 6; i++) {
+  await logInfoByPath(baseFolderPath);
+
+  for (let i = 1; i <= FOLDERS_COUNT; i++) {
     const newDirPath = path.join(baseFolderPath, `folder${i}`);
     await fs.mkdir(newDirPath, {
       recursive: true,
     });
-    console.log(newDirPath);
+    await logInfoByPath(newDirPath);
 
-    for (let j = 1; j < 6; j++) {
-      const newFilePath = path.join(baseFolderPath, `folder${i}`, `text${j}.txt`);
-      await fs.writeFile(newFilePath, "");
-      console.log(newFilePath);
-    }
+    const fileCreatePromises = Array.from({length: FILES_COUNT}, (_,j)=>{
+        const newFilePath = path.join(newDirPath, `text${j+1}.txt`)
+        return fs.writeFile(newFilePath, '').then(()=>logInfoByPath(newFilePath))
+    })
+    await Promise.all(fileCreatePromises)
   }
 };
 
-foo();
+main();
