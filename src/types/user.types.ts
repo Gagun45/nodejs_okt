@@ -3,3 +3,5 @@ export interface IUser {
     name: string;
     age: number;
 }
+
+export type CreateUserDto = Omit<IUser, "id">;
