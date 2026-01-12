@@ -1,39 +1,22 @@
-const fs = require("fs/promises");
-const path = require("path");
-
-const FOLDERS_COUNT = 5;
-const FILES_COUNT = 5;
-
-const logInfoByPath = async (targetPath) => {
-  const stat = await fs.stat(targetPath);
-  const type = stat.isFile() ? "FILE" : "FOLDER";
-  console.log(`${targetPath} --- ${type}`);
-};
+const {
+  FOLDERS_COUNT,
+  BASE_FOLDER_PATH,
+  getFolderPath,
+  createFolder,
+  createFilesInFolder,
+  infoLogger,
+} = require("./helper");
 
 const main = async () => {
-    //creating baseFolder
-  const baseFolderPath = path.join(__dirname, "baseFolder");
-  await fs.mkdir(baseFolderPath, {
-    recursive: true,
-  });
-  await logInfoByPath(baseFolderPath);
+  await createFolder(BASE_FOLDER_PATH);
 
-  //creating subfolders and files
   for (let i = 1; i <= FOLDERS_COUNT; i++) {
-    //creating subfolders
-    const newDirPath = path.join(baseFolderPath, `folder${i}`);
-    await fs.mkdir(newDirPath, {
-      recursive: true,
-    });
-    await logInfoByPath(newDirPath);
-
-    //creating files
-    const fileCreatePromises = Array.from({length: FILES_COUNT}, (_,j)=>{
-        const newFilePath = path.join(newDirPath, `text${j+1}.txt`)
-        return fs.writeFile(newFilePath, '').then(()=>logInfoByPath(newFilePath))
-    })
-    await Promise.all(fileCreatePromises)
+    const dirPath = getFolderPath(i);
+    await createFolder(dirPath);
+    await createFilesInFolder(dirPath);
   }
+
+  await infoLogger();
 };
 
 main();
