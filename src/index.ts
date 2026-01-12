@@ -1,7 +1,5 @@
 import express, { Request, Response } from "express";
 
-import { ParsedPath } from "path";
-
 import { getUserById, getUsers, resetDb, updateUsers } from "./dbActions";
 import {
     parseUserIdOrThrow,
