@@ -158,6 +158,11 @@ app.use(
     },
 );
 
+process.on("uncaughtException", (error) => {
+    console.error("uncaughtException", error.message, error.stack);
+    process.exit(1);
+});
+
 app.listen(3000, () => {
     // eslint-disable-next-line no-console
     console.log("App running at http://localhost:3000");
