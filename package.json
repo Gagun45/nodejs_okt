@@ -3,7 +3,8 @@
         "start:dev": "rimraf dist && tsc-watch --onSuccess \"npm run watch:server\"",
         "watch:server": "nodemon --exec ts-node src/index.ts",
         "start": "node ./dist/main.js",
-        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+        "prepare": "husky install"
     },
     "dependencies": {
         "express": "^5.2.1"
@@ -19,9 +20,13 @@
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-prettier": "^5.2.3",
         "eslint-plugin-simple-import-sort": "^12.1.1",
+        "husky": "^8.0.0",
         "nodemon": "^3.1.11",
         "rimraf": "^6.1.2",
         "ts-node": "^10.9.2",
         "tsc-watch": "^7.2.0"
+    },
+    "lint-staged": {
+        "*.{ts,tsx,js,jsx}": "eslint --fix"
     }
 }
