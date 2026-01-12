@@ -1,6 +1,7 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 
-import { getUserById, getUsers, resetDb  , updateUsers } from "./dbActions";
+import { getUserById, getUsers, resetDb, updateUsers } from "./dbActions";
+import { ApiError } from "./errors/api-error";
 import {
     parseUserIdOrThrow,
     validateAgeOrThrow,
@@ -13,19 +14,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //reset users.txt file
-app.get("/reset", async (req: Request, res: Response) => {
-    await resetDb();
-    res.send("users.txt reseted");
+app.get("/reset", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await resetDb();
+        res.send("users.txt reseted");
+    } catch (e) {
+        next(e);
+    }
 });
 
 //get all users
-app.get("/users", async (req: Request, res: Response) => {
-    const users = await getUsers();
-    res.send(users);
+app.get("/users", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await getUsers();
+        res.send(users);
+    } catch (e) {
+        next(e);
+    }
 });
 
 //create new user
-app.post("/users", async (req: Request, res: Response) => {
+app.post("/users", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await getUsers();
 
@@ -42,89 +51,112 @@ app.post("/users", async (req: Request, res: Response) => {
 
         res.status(201).send(newUser);
     } catch (e) {
-        res.status(400).send(e.message);
+        next(e);
     }
 });
 
 //get single user
-app.get("/users/:userId", async (req: Request, res: Response) => {
-    try {
-        const userId = parseUserIdOrThrow(req.params.userId);
-        const user = await getUserById(userId);
-        if (!user) return res.status(404).send("User not found");
-        res.send(user);
-    } catch (e) {
-        res.status(400).send(e.message);
-    }
-});
+app.get(
+    "/users/:userId",
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = parseUserIdOrThrow(req.params.userId);
+            const user = await getUserById(userId);
+            if (!user) throw new ApiError("User not found", 404);
+            res.send(user);
+        } catch (e) {
+            next(e);
+        }
+    },
+);
 
 //update user
-app.patch("/users/:userId", async (req: Request, res: Response) => {
-    try {
-        const userId = parseUserIdOrThrow(req.params.userId);
-        const users = await getUsers();
-        const existingUser = users.find((user) => user.id === userId);
-        if (!existingUser) return res.status(404).send("User not found");
-        const { name, age } = req.body;
-        if (name !== undefined) {
-            validateNameOrThrow(name);
-            existingUser.name = name;
+app.patch(
+    "/users/:userId",
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = parseUserIdOrThrow(req.params.userId);
+            const users = await getUsers();
+            const existingUser = users.find((user) => user.id === userId);
+            if (!existingUser) throw new ApiError("User not found", 404);
+            const { name, age } = req.body;
+            if (name !== undefined) {
+                validateNameOrThrow(name);
+                existingUser.name = name;
+            }
+            if (age !== undefined) {
+                validateAgeOrThrow(age);
+                existingUser.age = age;
+            }
+            await updateUsers(users);
+            res.send(existingUser);
+        } catch (e) {
+            next(e);
         }
-        if (age !== undefined) {
-            validateAgeOrThrow(age);
-            existingUser.age = age;
-        }
-        await updateUsers(users);
-        res.send(existingUser);
-    } catch (e) {
-        res.status(400).send(e.message);
-    }
-});
+    },
+);
 
 //replace user
-app.put("/users/:userId", async (req: Request, res: Response) => {
-    try {
-        const userId = parseUserIdOrThrow(req.params.userId);
-        const users = await getUsers();
-        const existingUser = users.find((user) => user.id === userId);
-        if (!existingUser) return res.status(404).send("User not found");
-        const { name, age } = req.body;
-        if (name === undefined || age === undefined)
-            return res
-                .status(400)
-                .send("Provide both name and age field please");
+app.put(
+    "/users/:userId",
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = parseUserIdOrThrow(req.params.userId);
+            const users = await getUsers();
+            const existingUser = users.find((user) => user.id === userId);
+            if (!existingUser) throw new ApiError("User not found", 404);
+            const { name, age } = req.body;
+            if (name === undefined || age === undefined)
+                return res
+                    .status(400)
+                    .send("Provide both name and age field please");
 
-        validateNameOrThrow(name);
-        validateAgeOrThrow(age);
+            validateNameOrThrow(name);
+            validateAgeOrThrow(age);
 
-        existingUser.name = name;
-        existingUser.age = age;
+            existingUser.name = name;
+            existingUser.age = age;
 
-        await updateUsers(users);
-        res.send(existingUser);
-    } catch (e) {
-        res.status(400).send(e.message);
-    }
-});
+            await updateUsers(users);
+            res.send(existingUser);
+        } catch (e) {
+            next(e);
+        }
+    },
+);
 
 //delete user
-app.delete("/users/:userId", async (req: Request, res: Response) => {
-    try {
-        const users = await getUsers();
-        const userId = parseUserIdOrThrow(req.params.userId);
+app.delete(
+    "/users/:userId",
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await getUsers();
+            const userId = parseUserIdOrThrow(req.params.userId);
 
-        const userIndex = users.findIndex((user) => user.id === userId);
-        if (userIndex === -1) {
-            return res.status(404).send("User not found");
+            const userIndex = users.findIndex((user) => user.id === userId);
+            if (userIndex === -1) throw new ApiError("User not found", 404);
+
+            users.splice(userIndex, 1);
+            await updateUsers(users);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
         }
+    },
+);
 
-        users.splice(userIndex, 1);
-        await updateUsers(users);
-        res.sendStatus(204);
-    } catch (e) {
-        res.status(400).send(e.message);
-    }
-});
+app.use(
+    (
+        error: Error | ApiError,
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        if (error instanceof ApiError) {
+            res.status(error.status).send(error.message);
+        } else res.status(500).send(error.message);
+    },
+);
 
 app.listen(3000, () => {
     // eslint-disable-next-line no-console
