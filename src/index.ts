@@ -1,10 +1,10 @@
-const express = require("express");
-const { getUsers, resetDb, updateUsers, getUserById } = require("./dbActions");
-const {
+import express from "express";
+import { getUsers, resetDb, updateUsers, getUserById } from "./dbActions";
+import {
   validateNameOrThrow,
   validateAgeOrThrow,
   parseUserIdOrThrow,
-} = require("./validation");
+} from "./validation";
 
 const app = express();
 
@@ -48,7 +48,7 @@ app.post("/users", async (req, res) => {
 //get single user
 app.get("/users/:userId", async (req, res) => {
   try {
-    const userId = parseUserIdOrThrow(req.params.userId)
+    const userId = parseUserIdOrThrow(req.params.userId);
     const user = await getUserById(userId);
     if (!user) return res.status(404).send("User not found");
     res.send(user);
@@ -60,7 +60,7 @@ app.get("/users/:userId", async (req, res) => {
 //update user
 app.patch("/users/:userId", async (req, res) => {
   try {
-    const userId = parseUserIdOrThrow(req.params.userId)
+    const userId = parseUserIdOrThrow(req.params.userId);
     const users = await getUsers();
     const existingUser = users.find((user) => user.id === userId);
     if (!existingUser) return res.status(404).send("User not found");
