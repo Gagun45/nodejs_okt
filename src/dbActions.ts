@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 
-export const pathToDb = path.join(__dirname, "users.txt");
+export const pathToDb = path.join(process.cwd(), "users.txt");
 
 export const getUsers = async () => {
   const data = await fs.readFile(pathToDb, { encoding: "utf-8" });
