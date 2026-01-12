@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { getUsers, resetDb, updateUsers, getUserById } from "./dbActions";
 import {
   validateNameOrThrow,
@@ -12,19 +12,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //reset users.txt file
-app.get("/reset", async (req, res) => {
+app.get("/reset", async (req: Request, res: Response) => {
   await resetDb();
   res.send("users.txt reseted");
 });
 
 //get all users
-app.get("/users", async (req, res) => {
+app.get("/users", async (req: Request, res: Response) => {
   const users = await getUsers();
   res.send(users);
 });
 
 //create new user
-app.post("/users", async (req, res) => {
+app.post("/users", async (req: Request, res: Response) => {
   try {
     const users = await getUsers();
 
@@ -46,7 +46,7 @@ app.post("/users", async (req, res) => {
 });
 
 //get single user
-app.get("/users/:userId", async (req, res) => {
+app.get("/users/:userId", async (req: Request, res: Response) => {
   try {
     const userId = parseUserIdOrThrow(req.params.userId);
     const user = await getUserById(userId);
@@ -58,7 +58,7 @@ app.get("/users/:userId", async (req, res) => {
 });
 
 //update user
-app.patch("/users/:userId", async (req, res) => {
+app.patch("/users/:userId", async (req: Request, res: Response) => {
   try {
     const userId = parseUserIdOrThrow(req.params.userId);
     const users = await getUsers();
@@ -81,7 +81,7 @@ app.patch("/users/:userId", async (req, res) => {
 });
 
 //replace user
-app.put("/users/:userId", async (req, res) => {
+app.put("/users/:userId", async (req: Request, res: Response) => {
   try {
     const userId = parseUserIdOrThrow(req.params.userId);
     const users = await getUsers();
@@ -105,7 +105,7 @@ app.put("/users/:userId", async (req, res) => {
 });
 
 //delete user
-app.delete("/users/:userId", async (req, res) => {
+app.delete("/users/:userId", async (req: Request, res: Response) => {
   try {
     const users = await getUsers();
     const userId = parseUserIdOrThrow(req.params.userId);
