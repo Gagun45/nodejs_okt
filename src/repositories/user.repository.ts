@@ -1,7 +1,7 @@
 import { ApiError } from "../errors/api-error";
 import { fsService } from "../services/fs.service";
-import { validateAgeOrThrow, validateNameOrThrow } from "../validation";
 import { CreateUserDto, IUser } from "../types/user.types";
+import { validateAgeOrThrow, validateNameOrThrow } from "../validation";
 
 export const userRepository = {
     getUsers: async (): Promise<IUser[]> => {

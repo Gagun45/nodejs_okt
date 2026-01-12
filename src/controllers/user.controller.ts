@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 import { userService } from "../services/user.service";
-import { parseUserIdOrThrow } from "../validation";
 import { CreateUserDto, IUser } from "../types/user.types";
+import { parseUserIdOrThrow } from "../validation";
 
 export const userController = {
     getUsers: async (req: Request, res: Response, next: NextFunction) => {
