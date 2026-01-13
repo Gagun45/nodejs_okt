@@ -1,79 +1,31 @@
-import { ApiError } from "../errors/api-error";
-import { fsService } from "../services/fs.service";
-import { CreateUserDto, IUser } from "../types/user.types";
-import { validateAgeOrThrow, validateNameOrThrow } from "../validation";
+import { User } from "../models/user.model";
+import { CreateUserDto, IUser, UpdateUserDto } from "../types/user.types";
 
 export const userRepository = {
     getUsers: async (): Promise<IUser[]> => {
-        return await fsService.read();
+        return await User.find({});
     },
-    createUser: async (dto: Partial<IUser>): Promise<IUser> => {
-        const { age, name } = dto;
-        const users = await fsService.read();
-        if (!name || !age) throw new ApiError("Some fields are missing", 400);
-        validateNameOrThrow(name);
-        validateAgeOrThrow(age);
-        const newUser: IUser = {
-            id: users.length ? users[users.length - 1].id + 1 : 1,
-            name,
-            age,
-        };
-        users.push(newUser);
-        await fsService.write(users);
-        return newUser;
+    createUser: async (dto: CreateUserDto): Promise<IUser> => {
+        return await User.create(dto);
     },
-    getUserById: async (userId: number): Promise<IUser | undefined> => {
-        const users = await fsService.read();
-        const user = users.find((user) => user.id === userId);
-        return user;
+    getUserById: async (userId: string): Promise<IUser | null> => {
+        return await User.findById(userId);
     },
-    deleteUserById: async (userId: number): Promise<void> => {
-        const users = await fsService.read();
-
-        const userIndex = users.findIndex((user) => user.id === userId);
-        if (userIndex === -1) throw new ApiError("User not found", 404);
-
-        users.splice(userIndex, 1);
-        await fsService.write(users);
+    deleteUserById: async (userId: string): Promise<void | null> => {
+        return await User.findByIdAndDelete(userId);
     },
-    putUserById: async (userId: number, dto: CreateUserDto): Promise<IUser> => {
-        const users = await fsService.read();
-        const existingUser = users.find((user) => user.id === userId);
-        if (!existingUser) throw new ApiError("User not found", 404);
-        const { name, age } = dto;
-        if (name === undefined || age === undefined)
-            throw new ApiError("Some fields are missing", 400);
-
-        validateNameOrThrow(name);
-        validateAgeOrThrow(age);
-
-        existingUser.name = name;
-        existingUser.age = age;
-
-        await fsService.write(users);
-        return existingUser;
+    updateUserById: async (
+        userId: string,
+        dto: UpdateUserDto,
+    ): Promise<IUser | null> => {
+        return await User.findByIdAndUpdate(
+            userId,
+            { $set: dto },
+            { new: true },
+        );
     },
 
-    patchUserById: async (
-        userId: number,
-        dto: Partial<IUser>,
-    ): Promise<IUser> => {
-        const users = await fsService.read();
-        const existingUser = users.find((user) => user.id === userId);
-        if (!existingUser) throw new ApiError("User not found", 404);
-        const { name, age } = dto;
-        if (name === undefined && age === undefined)
-            throw new ApiError("No fields provided", 400);
-        if (name !== undefined) {
-            validateNameOrThrow(name);
-            existingUser.name = name;
-        }
-        if (age !== undefined) {
-            validateAgeOrThrow(age);
-            existingUser.age = age;
-        }
-        await fsService.write(users);
-        return existingUser;
+    resetUsers: async (): Promise<void> => {
+        await User.deleteMany({});
     },
-    resetUsers: async (): Promise<void> => await fsService.reset(),
 };

@@ -1,30 +1,30 @@
-import { ApiError } from "../errors/api-error";
+import { customErrors } from "../errors/errors";
 import { userRepository } from "../repositories/user.repository";
-import { CreateUserDto, IUser } from "../types/user.types";
+import { CreateUserDto, IUser, UpdateUserDto } from "../types/user.types";
 
 export const userService = {
     getUsers: async (): Promise<IUser[]> => {
         return await userRepository.getUsers();
     },
-    createUser: async (dto: Partial<IUser>): Promise<IUser> => {
+    createUser: async (dto: CreateUserDto): Promise<IUser> => {
         return await userRepository.createUser(dto);
     },
-    getUserById: async (userId: number): Promise<IUser> => {
+    getUserById: async (userId: string): Promise<IUser> => {
         const user = await userRepository.getUserById(userId);
-        if (!user) throw new ApiError("User not found", 404);
+        if (!user) throw customErrors.notFound("User");
         return user;
     },
-    deleteUserById: async (userId: number): Promise<void> => {
-        await userRepository.deleteUserById(userId);
+    deleteUserById: async (userId: string): Promise<void> => {
+        const deletedUser = await userRepository.deleteUserById(userId);
+        if (!deletedUser) throw customErrors.notFound("User");
     },
-    putUserById: async (userId: number, dto: CreateUserDto): Promise<IUser> => {
-        return await userRepository.putUserById(userId, dto);
-    },
-    patchUserById: async (
-        userId: number,
-        dto: Partial<IUser>,
+    updateUserById: async (
+        userId: string,
+        dto: UpdateUserDto,
     ): Promise<IUser> => {
-        return await userRepository.patchUserById(userId, dto);
+        const user = await userRepository.updateUserById(userId, dto);
+        if (!user) throw customErrors.notFound("User");
+        return user;
     },
     resetUsers: async (): Promise<void> => {
         await userRepository.resetUsers();
