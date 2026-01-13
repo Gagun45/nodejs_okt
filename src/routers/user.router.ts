@@ -1,8 +1,9 @@
 import { Router } from "express";
 
 import { userController } from "../controllers/user.controller";
-import { createUserSchema, updateUserSchema } from "../joi/schemas";
+import { createUserSchema } from "../joi/schemas";
 import { commonMiddleware } from "../middlewares/common.middleware";
+import { userIdRouter } from "./userId.router";
 
 const router = Router();
 
@@ -15,21 +16,6 @@ router.post(
 
 router.get("/reset", userController.resetUsers);
 
-router.get(
-    "/:userId",
-    commonMiddleware.isIdValid("userId"),
-    userController.getUserById,
-);
-router.delete(
-    "/:userId",
-    commonMiddleware.isIdValid("userId"),
-    userController.deleteUserById,
-);
-router.patch(
-    "/:userId",
-    commonMiddleware.isIdValid("userId"),
-    commonMiddleware.validateBody(updateUserSchema),
-    userController.updateUserById,
-);
+router.use("/:userId", commonMiddleware.isIdValid("userId"), userIdRouter);
 
 export { router as userRouter };
