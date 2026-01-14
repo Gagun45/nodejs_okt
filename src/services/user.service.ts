@@ -1,17 +1,13 @@
 import { customErrors } from "../errors/errors";
 import { userRepository } from "../repositories/user.repository";
-import {
-    CreateUserDtoType,
-    IUser,
-    UpdateUserDtoType,
-} from "../types/user.types";
+import { IUser, SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 import { passwordService } from "./password.service";
 
 export const userService = {
     getAll: async (): Promise<IUser[]> => {
         return await userRepository.getAll();
     },
-    create: async (dto: CreateUserDtoType): Promise<IUser> => {
+    create: async (dto: SingUpDtoType): Promise<IUser> => {
         const password = await passwordService.hash(dto.password);
         return await userRepository.create({ ...dto, password });
     },

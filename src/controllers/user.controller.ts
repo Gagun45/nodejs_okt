@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { userService } from "../services/user.service";
-import { CreateUserDtoType, UpdateUserDtoType } from "../types/user.types";
+import { SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 
 export const userController = {
     getAll: async (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ export const userController = {
     },
     create: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const dto = req.body as CreateUserDtoType;
+            const dto = req.body as SingUpDtoType;
             const newUser = await userService.create(dto);
             res.status(201).send(newUser);
         } catch (error) {

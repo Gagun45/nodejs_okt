@@ -1,17 +1,13 @@
 import { Router } from "express";
 
 import { userController } from "../controllers/user.controller";
-import { createUserSchema, updateUserSchema } from "../joi/schemas";
+import { updateUserSchema } from "../joi/schemas";
+import { tokenMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 
 const router = Router();
 
-router.get("/", userController.getAll);
-router.post(
-    "/",
-    commonMiddleware.validateBody(createUserSchema),
-    userController.create,
-);
+router.get("/", tokenMiddleware, userController.getAll);
 
 router.get("/reset", userController.reset);
 

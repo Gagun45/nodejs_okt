@@ -1,19 +1,18 @@
 import { User } from "../models/user.model";
-import {
-    CreateUserDtoType,
-    IUser,
-    UpdateUserDtoType,
-} from "../types/user.types";
+import { IUser, SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 
 export const userRepository = {
     getAll: async (): Promise<IUser[]> => {
         return await User.find({});
     },
-    create: async (dto: CreateUserDtoType): Promise<IUser> => {
+    create: async (dto: SingUpDtoType): Promise<IUser> => {
         return await User.create(dto);
     },
     getById: async (userId: string): Promise<IUser | null> => {
         return await User.findById(userId);
+    },
+    getByEmail: async (email: string): Promise<IUser | null> => {
+        return await User.findOne({ email }).select("+password");
     },
     delete: async (userId: string): Promise<void | null> => {
         return await User.findByIdAndDelete(userId);

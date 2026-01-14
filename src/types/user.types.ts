@@ -14,8 +14,6 @@ export interface IUser {
     updatedAt: Date;
 }
 
-export type CreateUserDtoType = Pick<
-    IUser,
-    "name" | "age" | "email" | "password"
->;
-export type UpdateUserDtoType = Partial<CreateUserDtoType>;
+export type SingUpDtoType = Pick<IUser, "name" | "age" | "email" | "password">;
+export type SingInDtoType = Pick<IUser, "email" | "password">;
+export type UpdateUserDtoType = Partial<SingUpDtoType>;
