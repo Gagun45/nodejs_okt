@@ -5,13 +5,15 @@ import {
     IUser,
     UpdateUserDtoType,
 } from "../types/user.types";
+import { passwordService } from "./password.service";
 
 export const userService = {
     getAll: async (): Promise<IUser[]> => {
         return await userRepository.getAll();
     },
     create: async (dto: CreateUserDtoType): Promise<IUser> => {
-        return await userRepository.create(dto);
+        const password = await passwordService.hash(dto.password);
+        return await userRepository.create({ ...dto, password });
     },
     getById: async (userId: string): Promise<IUser> => {
         const user = await userRepository.getById(userId);
