@@ -1,5 +1,6 @@
 import { customErrors } from "../errors/errors";
 import { userRepository } from "../repositories/user.repository";
+import { TokenPayloadType } from "../types/token.types";
 import { IUser, SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 import { passwordService } from "./password.service";
 
@@ -16,12 +17,29 @@ export const userService = {
         if (!user) throw customErrors.notFound("User");
         return user;
     },
+    getMe: async (payload: TokenPayloadType): Promise<IUser> => {
+        const user = await userRepository.getById(payload.userId);
+        if (!user) throw customErrors.notFound("User");
+        return user;
+    },
     delete: async (userId: string): Promise<void> => {
         const deletedUser = await userRepository.delete(userId);
         if (!deletedUser) throw customErrors.notFound("User");
     },
+    deleteMe: async (payload: TokenPayloadType): Promise<void> => {
+        const deletedUser = await userRepository.delete(payload.userId);
+        if (!deletedUser) throw customErrors.notFound("User");
+    },
     update: async (userId: string, dto: UpdateUserDtoType): Promise<IUser> => {
         const user = await userRepository.update(userId, dto);
+        if (!user) throw customErrors.notFound("User");
+        return user;
+    },
+    updateMe: async (
+        payload: TokenPayloadType,
+        dto: UpdateUserDtoType,
+    ): Promise<IUser> => {
+        const user = await userRepository.update(payload.userId, dto);
         if (!user) throw customErrors.notFound("User");
         return user;
     },

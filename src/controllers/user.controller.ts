@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { userService } from "../services/user.service";
+import { TokenPayloadType } from "../types/token.types";
 import { SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 
 export const userController = {
@@ -30,10 +31,28 @@ export const userController = {
             next(e);
         }
     },
+    getMe: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const payload = res.locals.jwtPayload as TokenPayloadType;
+            const user = await userService.getMe(payload);
+            res.send(user);
+        } catch (e) {
+            next(e);
+        }
+    },
     delete: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = String(req.params.userId);
             await userService.delete(userId);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    },
+    deleteMe: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const payload = res.locals.jwtPayload as TokenPayloadType;
+            await userService.deleteMe(payload);
             res.sendStatus(204);
         } catch (e) {
             next(e);
@@ -45,6 +64,16 @@ export const userController = {
             const userId = String(req.params.userId);
             const dto = req.body as UpdateUserDtoType;
             const user = await userService.update(userId, dto);
+            res.status(201).send(user);
+        } catch (e) {
+            next(e);
+        }
+    },
+    updateMe: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const payload = res.locals.jwtPayload as TokenPayloadType;
+            const dto = req.body as UpdateUserDtoType;
+            const user = await userService.updateMe(payload, dto);
             res.status(201).send(user);
         } catch (e) {
             next(e);

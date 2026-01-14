@@ -1,19 +1,19 @@
 import { Router } from "express";
 
 import { authController } from "../controllers/auth.controller";
-import { singInSchema, singUpSchema } from "../joi/schemas";
+import { userSchemas } from "../joi/schemas";
 import { commonMiddleware } from "../middlewares/common.middleware";
 
 const router = Router();
 
 router.post(
     "/sign-up",
-    commonMiddleware.validateBody(singUpSchema),
+    commonMiddleware.validateBody(userSchemas.singUp),
     authController.signUp,
 );
 router.post(
     "/sign-in",
-    commonMiddleware.validateBody(singInSchema),
+    commonMiddleware.validateBody(userSchemas.singIn),
     authController.singIn,
 );
 
