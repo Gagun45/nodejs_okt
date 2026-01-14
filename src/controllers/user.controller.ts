@@ -1,58 +1,58 @@
 import { NextFunction, Request, Response } from "express";
 
 import { userService } from "../services/user.service";
-import { CreateUserDto, UpdateUserDto } from "../types/user.types";
+import { CreateUserDtoType, UpdateUserDtoType } from "../types/user.types";
 
 export const userController = {
-    getUsers: async (req: Request, res: Response, next: NextFunction) => {
+    getAll: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await userService.getUsers();
+            const users = await userService.getAll();
             res.send(users);
         } catch (error) {
             next(error);
         }
     },
-    createUser: async (req: Request, res: Response, next: NextFunction) => {
+    create: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const dto = req.body as CreateUserDto;
-            const newUser = await userService.createUser(dto);
+            const dto = req.body as CreateUserDtoType;
+            const newUser = await userService.create(dto);
             res.status(201).send(newUser);
         } catch (error) {
             next(error);
         }
     },
-    getUserById: async (req: Request, res: Response, next: NextFunction) => {
+    getById: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = String(req.params.userId);
-            const user = await userService.getUserById(userId);
+            const user = await userService.getById(userId);
             res.send(user);
         } catch (e) {
             next(e);
         }
     },
-    deleteUserById: async (req: Request, res: Response, next: NextFunction) => {
+    delete: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = String(req.params.userId);
-            await userService.deleteUserById(userId);
+            await userService.delete(userId);
             res.sendStatus(204);
         } catch (e) {
             next(e);
         }
     },
 
-    updateUserById: async (req: Request, res: Response, next: NextFunction) => {
+    update: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = String(req.params.userId);
-            const dto = req.body as UpdateUserDto;
-            const user = await userService.updateUserById(userId, dto);
+            const dto = req.body as UpdateUserDtoType;
+            const user = await userService.update(userId, dto);
             res.status(201).send(user);
         } catch (e) {
             next(e);
         }
     },
-    resetUsers: async (req: Request, res: Response, next: NextFunction) => {
+    reset: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await userService.resetUsers();
+            await userService.reset();
             res.send("Users collection reseted");
         } catch (e) {
             next(e);

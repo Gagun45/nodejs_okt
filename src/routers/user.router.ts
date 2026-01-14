@@ -6,23 +6,23 @@ import { commonMiddleware } from "../middlewares/common.middleware";
 
 const router = Router();
 
-router.get("/", userController.getUsers);
+router.get("/", userController.getAll);
 router.post(
     "/",
     commonMiddleware.validateBody(createUserSchema),
-    userController.createUser,
+    userController.create,
 );
 
-router.get("/reset", userController.resetUsers);
+router.get("/reset", userController.reset);
 
 router.use(commonMiddleware.isIdValid("userId"));
 
-router.get("/:userId", userController.getUserById);
-router.delete("/:userId", userController.deleteUserById);
+router.get("/:userId", userController.getById);
+router.delete("/:userId", userController.delete);
 router.patch(
     "/:userId",
     commonMiddleware.validateBody(updateUserSchema),
-    userController.updateUserById,
+    userController.update,
 );
 
 export { router as userRouter };
