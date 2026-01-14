@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { userService } from "../services/user.service";
-import { TokenPayloadType } from "../types/token.types";
+import { ITokenPayload } from "../types/token.types";
 import { SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 
 export const userController = {
@@ -33,7 +33,7 @@ export const userController = {
     },
     getMe: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const payload = res.locals.jwtPayload as TokenPayloadType;
+            const payload = res.locals.jwtPayload as ITokenPayload;
             const user = await userService.getMe(payload);
             res.send(user);
         } catch (e) {
@@ -51,7 +51,7 @@ export const userController = {
     },
     deleteMe: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const payload = res.locals.jwtPayload as TokenPayloadType;
+            const payload = res.locals.jwtPayload as ITokenPayload;
             await userService.deleteMe(payload);
             res.sendStatus(204);
         } catch (e) {
@@ -71,7 +71,7 @@ export const userController = {
     },
     updateMe: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const payload = res.locals.jwtPayload as TokenPayloadType;
+            const payload = res.locals.jwtPayload as ITokenPayload;
             const dto = req.body as UpdateUserDtoType;
             const user = await userService.updateMe(payload, dto);
             res.status(201).send(user);

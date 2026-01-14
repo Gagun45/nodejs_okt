@@ -1,11 +1,21 @@
 import { Token } from "../models/token.model";
-import { IToken } from "../types/token.types";
+import { ITokenDB, ITokenPair, ITokenResponse } from "../types/token.types";
 
 export const tokenRepository = {
-    create: async (dto: Omit<IToken, "role">): Promise<IToken> => {
-        return await Token.create(dto);
+    save: async (tokens: ITokenPair, userId: string): Promise<ITokenDB> => {
+        return await Token.create({ ...tokens, userId });
     },
-    findByParams: async (params: Partial<IToken>): Promise<IToken | null> => {
-        return await Token.findOne(params);
+    findByRefreshToken: async (
+        refreshToken: string,
+    ): Promise<ITokenResponse | null> => {
+        return await Token.findOne({ refreshToken });
+    },
+    findByAccessToken: async (
+        accessToken: string,
+    ): Promise<ITokenResponse | null> => {
+        return await Token.findOne({ accessToken });
+    },
+    deleteByRefreshToken: async (refreshToken: string) => {
+        return await Token.deleteOne({ refreshToken });
     },
 };

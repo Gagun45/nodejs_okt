@@ -2,10 +2,10 @@ import jsonwebtoken from "jsonwebtoken";
 
 import { config } from "../config/config";
 import { TokenTypesEnum } from "../enums/token-types.enum";
-import { TokenPairType, TokenPayloadType } from "../types/token.types";
+import { ITokenPair, ITokenPayload } from "../types/token.types";
 
 export const tokenService = {
-    generate: (payload: TokenPayloadType): TokenPairType => {
+    generate: (payload: ITokenPayload): ITokenPair => {
         const accessToken = jsonwebtoken.sign(
             payload,
             config.JWT_ACCESS_SECRET,
@@ -22,10 +22,7 @@ export const tokenService = {
         );
         return { accessToken, refreshToken };
     },
-    verifyToken: (
-        token: string,
-        tokenType: TokenTypesEnum,
-    ): TokenPayloadType => {
+    verifyToken: (token: string, tokenType: TokenTypesEnum): ITokenPayload => {
         let secretKey = "";
         switch (tokenType) {
             case TokenTypesEnum.ACCESS:
@@ -37,6 +34,6 @@ export const tokenService = {
             default:
                 throw new Error("Invalid token type");
         }
-        return jsonwebtoken.verify(token, secretKey) as TokenPayloadType;
+        return jsonwebtoken.verify(token, secretKey) as ITokenPayload;
     },
 };

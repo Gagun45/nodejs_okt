@@ -1,11 +1,22 @@
 import { RoleEnum } from "../enums/role.enum";
+import { IUser } from "./user.types";
 
-export interface IToken {
-    accessToken: string;
-    refreshToken: string;
+export interface ITokenResponse {
+    tokens: ITokenPair;
+    user: IUser;
+}
+
+export interface ITokenPayload {
     userId: string;
     role: RoleEnum;
 }
+export interface ITokenPair {
+    accessToken: string;
+    refreshToken: string;
+}
 
-export type TokenPayloadType = Pick<IToken, "role" | "userId">;
-export type TokenPairType = Pick<IToken, "accessToken" | "refreshToken">;
+export interface ITokenDB {
+    accessToken: string;
+    refreshToken: string;
+    userId: string;
+}

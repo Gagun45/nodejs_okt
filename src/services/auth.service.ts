@@ -1,24 +1,25 @@
+import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
-import { ISignInResponse, ISignUpResponse } from "../types/auth.types";
+import { ITokenPair, ITokenResponse } from "../types/token.types";
 import { SingInDtoType, SingUpDtoType } from "../types/user.types";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 import { userService } from "./user.service";
 
 export const authService = {
-    signUp: async (dto: SingUpDtoType): Promise<ISignUpResponse> => {
+    signUp: async (dto: SingUpDtoType): Promise<ITokenResponse> => {
         const user = await userService.create(dto);
         const { _id: userId, role } = user;
         const tokens = tokenService.generate({
             userId,
             role,
         });
-        await tokenRepository.create({ ...tokens, userId });
+        await tokenRepository.save(tokens, userId);
         return { user, tokens };
     },
-    signIn: async (dto: SingInDtoType): Promise<ISignInResponse> => {
+    signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) throw new ApiError("User not found", 404);
         const isPasswordCorrect = await passwordService.compare(
@@ -32,7 +33,27 @@ export const authService = {
             userId,
             role,
         });
-        await tokenRepository.create({ ...tokens, userId });
+        await tokenRepository.save(tokens, userId);
         return { user, tokens };
+    },
+    refreshToken: async (
+        refreshToken: string,
+        userId: string,
+        role: RoleEnum,
+    ): Promise<{ tokens: ITokenPair }> => {
+        //delete token from db
+        await tokenRepository.deleteByRefreshToken(refreshToken);
+
+        //generate new token
+        const tokens = tokenService.generate({
+            userId,
+            role,
+        });
+
+        //save new token to db
+        await tokenRepository.save(tokens, userId);
+
+        //return new token pair
+        return { tokens };
     },
 };
