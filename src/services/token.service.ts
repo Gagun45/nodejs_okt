@@ -10,14 +10,14 @@ export const tokenService = {
             payload,
             config.JWT_ACCESS_SECRET,
             {
-                expiresIn: "30m",
+                expiresIn: config.JWT_ACCESS_EXPIRATION,
             },
         );
         const refreshToken = jsonwebtoken.sign(
             payload,
             config.JWT_REFRESH_SECRET,
             {
-                expiresIn: "10d",
+                expiresIn: config.JWT_REFRESH_EXPIRATION,
             },
         );
         return { accessToken, refreshToken };
