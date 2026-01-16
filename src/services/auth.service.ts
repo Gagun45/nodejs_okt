@@ -26,6 +26,9 @@ export const authService = {
         );
         return { user, tokens };
     },
+    logout: async (refreshToken: string): Promise<void> => {
+        await tokenRepository.deleteByRefreshToken(refreshToken);
+    },
     signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
         const user = await userRepository.getByEmail(dto.email);
         if (!user) throw new ApiError("User not found", 404);

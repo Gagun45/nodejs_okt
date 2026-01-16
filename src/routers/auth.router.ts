@@ -22,5 +22,6 @@ router.post(
     authMiddleware.checkRefreshToken,
     authController.refreshToken,
 );
+router.post("/logout", authController.logout);
 
 export { router as authRouter };
