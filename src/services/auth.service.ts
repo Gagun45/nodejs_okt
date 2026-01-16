@@ -1,3 +1,4 @@
+import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import { tokenRepository } from "../repositories/token.repository";
@@ -18,7 +19,11 @@ export const authService = {
             role,
         });
         await tokenRepository.save(tokens, userId);
-        await emailService.send("Sign up success");
+        await emailService.send(
+            EmailTypeEnum.WELCOME,
+            "selyanchyn45@gmail.com",
+            { name: user.name },
+        );
         return { user, tokens };
     },
     signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
