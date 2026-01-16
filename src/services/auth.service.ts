@@ -4,6 +4,7 @@ import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { ITokenPair, ITokenResponse } from "../types/token.types";
 import { SingInDtoType, SingUpDtoType } from "../types/user.types";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 import { userService } from "./user.service";
@@ -17,6 +18,7 @@ export const authService = {
             role,
         });
         await tokenRepository.save(tokens, userId);
+        await emailService.send("Sign up success");
         return { user, tokens };
     },
     signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
