@@ -3,7 +3,11 @@ import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
-import { ITokenPair, ITokenResponse } from "../types/token.types";
+import {
+    ITokenPair,
+    ITokenPayload,
+    ITokenResponse,
+} from "../types/token.types";
 import { SingInDtoType, SingUpDtoType } from "../types/user.types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -27,7 +31,11 @@ export const authService = {
         return { user, tokens };
     },
     logout: async (refreshToken: string): Promise<void> => {
+        if (!refreshToken) throw new ApiError("Refresh token is missing", 401);
         await tokenRepository.deleteByRefreshToken(refreshToken);
+    },
+    logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
+        await tokenRepository.deleteByUserId(jwtPayload.userId);
     },
     signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
         const user = await userRepository.getByEmail(dto.email);

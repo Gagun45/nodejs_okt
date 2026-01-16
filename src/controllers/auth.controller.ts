@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ApiError } from "../errors/api-error";
 import { authService } from "../services/auth.service";
 import { ITokenPayload } from "../types/token.types";
 import { SingInDtoType, SingUpDtoType } from "../types/user.types";
@@ -28,9 +27,17 @@ export const authController = {
     logout: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const refreshToken = getBearerToken(req);
-            if (!refreshToken) throw new ApiError("Refresh token missing", 401);
             await authService.logout(refreshToken);
-            res.status(201).json({ message: "Logout sucess" });
+            res.status(200).json({ message: "Logout sucess" });
+        } catch (e) {
+            next(e);
+        }
+    },
+    logoutAll: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const jwtPayload = res.locals.jwtPayload as ITokenPayload;
+            await authService.logoutAll(jwtPayload);
+            res.status(200).json({ message: "Logout from all devices sucess" });
         } catch (e) {
             next(e);
         }

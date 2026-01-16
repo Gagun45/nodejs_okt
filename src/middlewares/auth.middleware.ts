@@ -14,9 +14,8 @@ export const authMiddleware = {
     ) => {
         try {
             const accessToken = getBearerToken(req);
-            if (!accessToken) {
-                throw new ApiError("No token provided", 401);
-            }
+            if (!accessToken) throw new ApiError("No token provided", 401);
+
             const payload = tokenService.verifyToken(
                 accessToken,
                 TokenTypesEnum.ACCESS,

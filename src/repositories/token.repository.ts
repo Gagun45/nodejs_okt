@@ -18,4 +18,7 @@ export const tokenRepository = {
     deleteByRefreshToken: async (refreshToken: string) => {
         return await Token.deleteOne({ refreshToken });
     },
+    deleteByUserId: async (userId: string) => {
+        return await Token.deleteMany({ userId });
+    },
 };
