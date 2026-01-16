@@ -4,4 +4,7 @@ export type EmailTypePayload = {
     [EmailTypeEnum.WELCOME]: {
         name: string;
     };
+    [EmailTypeEnum.LOGOUT]: {
+        name: string;
+    };
 };

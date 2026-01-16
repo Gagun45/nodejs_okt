@@ -1,3 +1,4 @@
+import { config } from "../config/config";
 import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
@@ -25,7 +26,7 @@ export const authService = {
         await tokenRepository.save(tokens, userId);
         await emailService.send(
             EmailTypeEnum.WELCOME,
-            "selyanchyn45@gmail.com", // should be user.email
+            config.SMTP_EMAIL, // should be user.email
             { name: user.name },
         );
         return { user, tokens };
@@ -35,7 +36,19 @@ export const authService = {
         await tokenRepository.deleteByRefreshToken(refreshToken);
     },
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
-        await tokenRepository.deleteByUserId(jwtPayload.userId);
+        const { userId } = jwtPayload;
+
+        const user = await userRepository.getById(userId);
+        if (!user) throw new ApiError("User not found", 404);
+
+        await tokenRepository.deleteByUserId(userId);
+        await emailService.send(
+            EmailTypeEnum.LOGOUT,
+            config.SMTP_EMAIL, // should be user.email
+            {
+                name: user.name,
+            },
+        );
     },
     signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
         const user = await userRepository.getByEmail(dto.email);

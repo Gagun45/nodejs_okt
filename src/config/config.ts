@@ -16,6 +16,6 @@ export const config = {
     JWT_REFRESH_EXPIRATION: hoursToSeconds(
         process.env.JWT_REFRESH_EXPIRATION_IN_HOURS!,
     ), //convert to number of seconds
-    SMTP_EMAIL: process.env.SMTP_EMAIL,
-    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SMTP_EMAIL: process.env.SMTP_EMAIL!,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD!,
 };
