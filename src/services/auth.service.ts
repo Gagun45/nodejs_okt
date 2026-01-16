@@ -21,7 +21,7 @@ export const authService = {
         await tokenRepository.save(tokens, userId);
         await emailService.send(
             EmailTypeEnum.WELCOME,
-            "selyanchyn45@gmail.com",
+            "selyanchyn45@gmail.com", // should be user.email
             { name: user.name },
         );
         return { user, tokens };
