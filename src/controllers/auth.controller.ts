@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ITokenPayload } from "../interfaces/token-auth.interfaces";
 import {
     ForgotPasswordSendType,
     ForgotPasswordSetType,
@@ -7,7 +8,6 @@ import {
     SingUpDtoType,
 } from "../interfaces/user.interfaces";
 import { authService } from "../services/auth.service";
-import { ITokenPayload } from "../types/token.types";
 import { getBearerToken } from "../utils/helper";
 
 export const authController = {

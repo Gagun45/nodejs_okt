@@ -1,5 +1,9 @@
+import {
+    IAuthResponse,
+    IAuthToken,
+    ITokenPair,
+} from "../interfaces/token-auth.interfaces";
 import { AuthToken } from "../models/token-auth";
-import { IAuthResponse, IAuthToken, ITokenPair } from "../types/token.types";
 
 export const tokenRepository = {
     save: async (tokens: ITokenPair, userId: string): Promise<IAuthToken> => {

@@ -4,12 +4,16 @@ import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import {
+    IAuthResponse,
+    ITokenPair,
+    ITokenPayload,
+} from "../interfaces/token-auth.interfaces";
+import {
     ForgotPasswordSendType,
     ForgotPasswordSetType,
     SingInDtoType,
     SingUpDtoType,
 } from "../interfaces/user.interfaces";
-import { IAuthResponse, ITokenPair, ITokenPayload } from "../types/token.types";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";

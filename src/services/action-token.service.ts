@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
+import { ITokenPayload } from "../interfaces/token-auth.interfaces";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { IActionTokenDB } from "../types/action-token.types";
-import { ITokenPayload } from "../types/token.types";
 
 export const actionTokenService = {
     save: async (actionToken: IActionTokenDB): Promise<IActionTokenDB> => {

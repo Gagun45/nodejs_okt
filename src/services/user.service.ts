@@ -1,11 +1,11 @@
 import { ApiError } from "../errors/api-error";
+import { ITokenPayload } from "../interfaces/token-auth.interfaces";
 import {
     IUser,
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
 import { userRepository } from "../repositories/user.repository";
-import { ITokenPayload } from "../types/token.types";
 import { passwordService } from "./password.service";
 
 export const userService = {

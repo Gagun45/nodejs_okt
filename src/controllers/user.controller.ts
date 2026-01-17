@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ITokenPayload } from "../interfaces/token-auth.interfaces";
 import {
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
 import { userService } from "../services/user.service";
-import { ITokenPayload } from "../types/token.types";
 
 export const userController = {
     getAll: async (req: Request, res: Response, next: NextFunction) => {

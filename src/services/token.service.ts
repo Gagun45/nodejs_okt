@@ -3,8 +3,12 @@ import jsonwebtoken from "jsonwebtoken";
 import { config } from "../config/config";
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
+import {
+    IAuthResponse,
+    ITokenPair,
+    ITokenPayload,
+} from "../interfaces/token-auth.interfaces";
 import { tokenRepository } from "../repositories/token.repository";
-import { IAuthResponse, ITokenPair, ITokenPayload } from "../types/token.types";
 
 export const tokenService = {
     findByAccessToken: async (accessToken: string): Promise<IAuthResponse> => {
