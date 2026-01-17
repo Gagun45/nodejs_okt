@@ -17,6 +17,11 @@ export const userService = {
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
+    getByEmail: async (email: string): Promise<IUser> => {
+        const user = await userRepository.getByEmail(email);
+        if (!user) throw new ApiError("User not found", 404);
+        return user;
+    },
     getMe: async (payload: ITokenPayload): Promise<IUser> => {
         const user = await userRepository.getById(payload.userId);
         if (!user) throw new ApiError("User not found", 404);

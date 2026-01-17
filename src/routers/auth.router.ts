@@ -29,6 +29,10 @@ router.post(
     authController.logoutAll,
 );
 
-// router.post("/forgot-password", authController.forgotPasswordSend);
+router.post(
+    "/forgot-password",
+    commonMiddleware.validateBody(userSchemas.forgotPasswordSend),
+    authController.forgotPasswordSend,
+);
 
 export { router as authRouter };

@@ -1,7 +1,9 @@
 import { config } from "../config/config";
+import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
+import { actionTokenRepository } from "../repositories/action-token.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import {
@@ -9,7 +11,11 @@ import {
     ITokenPayload,
     ITokenResponse,
 } from "../types/token.types";
-import { SingInDtoType, SingUpDtoType } from "../types/user.types";
+import {
+    ForgotPasswordSendType,
+    SingInDtoType,
+    SingUpDtoType,
+} from "../types/user.types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
@@ -34,6 +40,30 @@ export const authService = {
     logout: async (refreshToken: string): Promise<void> => {
         if (!refreshToken) throw new ApiError("Refresh token is missing", 401);
         await tokenRepository.deleteByRefreshToken(refreshToken);
+    },
+    forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
+        const user = await userService.getByEmail(dto.email);
+        const actionToken = tokenService.generateActionToken(
+            {
+                role: user.role,
+                userId: user._id,
+            },
+            ActionTokenTypesEnum.FORGOT_PASSWORD,
+        );
+        await actionTokenRepository.save(
+            actionToken,
+            user._id,
+            ActionTokenTypesEnum.FORGOT_PASSWORD,
+        );
+        await emailService.send(
+            EmailTypeEnum.FORGOT_PASSWORD,
+            config.SMTP_EMAIL, //shoud be user.email
+            {
+                name: user.name,
+                actionToken,
+                frontUrl: "qweqwe",
+            },
+        );
     },
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
         const { userId } = jwtPayload;

@@ -9,4 +9,8 @@ export const emailConstants = {
         subject: "Logout from all devices",
         template: "logout",
     },
+    [EmailTypeEnum.FORGOT_PASSWORD]: {
+        subject: "Forgot password",
+        template: "forgot-password",
+    },
 };

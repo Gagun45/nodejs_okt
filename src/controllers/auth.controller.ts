@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 
 import { authService } from "../services/auth.service";
 import { ITokenPayload } from "../types/token.types";
-import { SingInDtoType, SingUpDtoType } from "../types/user.types";
+import {
+    ForgotPasswordSendType,
+    SingInDtoType,
+    SingUpDtoType,
+} from "../types/user.types";
 import { getBearerToken } from "../utils/helper";
 
 export const authController = {
@@ -30,9 +34,9 @@ export const authController = {
         next: NextFunction,
     ) => {
         try {
-            const dto = req.body as SingInDtoType;
-            const result = await authService.signIn(dto);
-            res.status(201).json(result);
+            const dto = req.body as ForgotPasswordSendType;
+            await authService.forgotPasswordSend(dto);
+            res.status(204);
         } catch (e) {
             next(e);
         }

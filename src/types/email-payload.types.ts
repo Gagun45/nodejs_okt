@@ -7,4 +7,9 @@ export type EmailTypePayload = {
     [EmailTypeEnum.LOGOUT]: {
         name: string;
     };
+    [EmailTypeEnum.FORGOT_PASSWORD]: {
+        name: string;
+        frontUrl: string;
+        actionToken: string;
+    };
 };
