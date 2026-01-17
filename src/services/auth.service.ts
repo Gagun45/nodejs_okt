@@ -7,7 +7,7 @@ import {
     IAuthResponse,
     ITokenPair,
     ITokenPayload,
-} from "../interfaces/token-auth.interfaces";
+} from "../interfaces/token.interfaces";
 import {
     ForgotPasswordSendType,
     ForgotPasswordSetType,

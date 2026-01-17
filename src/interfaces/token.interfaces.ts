@@ -1,5 +1,5 @@
 import { RoleEnum } from "../enums/role.enum";
-import { IUser } from "../interfaces/user.interfaces";
+import { IUser } from "./user.interfaces";
 
 export interface IAuthResponse {
     tokens: ITokenPair;
@@ -15,7 +15,7 @@ export interface ITokenPair {
     refreshToken: string;
 }
 
-export interface IAuthToken {
+export interface IToken {
     _id: string;
     accessToken: string;
     refreshToken: string;

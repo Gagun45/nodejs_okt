@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ITokenPayload } from "../interfaces/token-auth.interfaces";
+import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
     ForgotPasswordSendType,
     ForgotPasswordSetType,

@@ -4,14 +4,14 @@ import { config } from "../config/config";
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
 import {
-    IAuthToken,
+    IToken,
     ITokenPair,
     ITokenPayload,
-} from "../interfaces/token-auth.interfaces";
+} from "../interfaces/token.interfaces";
 import { tokenRepository } from "../repositories/token.repository";
 
 export const tokenService = {
-    findOne: async (params: Partial<IAuthToken>): Promise<IAuthToken> => {
+    findOne: async (params: Partial<IToken>): Promise<IToken> => {
         const res = await tokenRepository.findOne(params);
         if (!res) throw new ApiError("Token not valid", 401);
         return res;
@@ -19,10 +19,10 @@ export const tokenService = {
     save: async (tokens: ITokenPair, userId: string) => {
         await tokenRepository.save(tokens, userId);
     },
-    deleteOne: async (params: Partial<IAuthToken>) => {
+    deleteOne: async (params: Partial<IToken>) => {
         await tokenRepository.deleteOne(params);
     },
-    deleteMany: async (params: Partial<IAuthToken>) => {
+    deleteMany: async (params: Partial<IToken>) => {
         await tokenRepository.deleteMany(params);
     },
     generatePair: (payload: ITokenPayload): ITokenPair => {

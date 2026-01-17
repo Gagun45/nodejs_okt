@@ -1,5 +1,5 @@
 import { ApiError } from "../errors/api-error";
-import { ITokenPayload } from "../interfaces/token-auth.interfaces";
+import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
     IUser,
     SingUpDtoType,

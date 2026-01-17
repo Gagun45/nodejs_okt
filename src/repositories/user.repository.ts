@@ -3,8 +3,8 @@ import {
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
+import { Token } from "../models/token.model";
 import { ActionToken } from "../models/token-action.model";
-import { AuthToken } from "../models/token-auth.model";
 import { User } from "../models/user.model";
 
 export const userRepository = {
@@ -41,7 +41,7 @@ export const userRepository = {
 
     reset: async (): Promise<void> => {
         await User.deleteMany({});
-        await AuthToken.deleteMany({});
+        await Token.deleteMany({});
         await ActionToken.deleteMany({});
     },
 };
