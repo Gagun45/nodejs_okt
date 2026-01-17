@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
-import { tokenRepository } from "../repositories/token.repository";
 import { tokenService } from "../services/token.service";
 import { getBearerToken } from "../utils/helper";
 
@@ -20,8 +19,7 @@ export const authMiddleware = {
                 accessToken,
                 TokenTypesEnum.ACCESS,
             );
-            const pair = await tokenRepository.findByAccessToken(accessToken);
-            if (!pair) throw new ApiError("Token is not valid", 401);
+            await tokenService.findByAccessToken(accessToken);
             res.locals.jwtPayload = payload;
             next();
         } catch (e) {
@@ -48,7 +46,7 @@ export const authMiddleware = {
 
             //check if token exists in db
             const existingToken =
-                await tokenRepository.findByRefreshToken(refreshToken);
+                await tokenService.findByRefreshToken(refreshToken);
             if (!existingToken) throw new ApiError("Token invalid", 401);
 
             res.locals.jwtPayload = jwtPayload;

@@ -16,7 +16,7 @@ const signUp = Joi.object({
 
 const signIn = Joi.object({
     email: userFields.email.required(),
-    password: userFields.email.required(),
+    password: userFields.password.required(),
 }).strict();
 
 const update = Joi.object({

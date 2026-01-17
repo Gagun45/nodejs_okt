@@ -36,7 +36,7 @@ export const authController = {
         try {
             const dto = req.body as ForgotPasswordSendType;
             await authService.forgotPasswordSend(dto);
-            res.status(204);
+            res.sendStatus(204);
         } catch (e) {
             next(e);
         }

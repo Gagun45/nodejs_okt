@@ -4,9 +4,35 @@ import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
-import { ITokenPair, ITokenPayload } from "../types/token.types";
+import { tokenRepository } from "../repositories/token.repository";
+import {
+    ITokenPair,
+    ITokenPayload,
+    ITokenResponse,
+} from "../types/token.types";
 
 export const tokenService = {
+    findByAccessToken: async (accessToken: string): Promise<ITokenResponse> => {
+        const res = await tokenRepository.findByAccessToken(accessToken);
+        if (!res) throw new ApiError("Token not valid", 401);
+        return res;
+    },
+    findByRefreshToken: async (
+        refreshToken: string,
+    ): Promise<ITokenResponse> => {
+        const res = await tokenRepository.findByRefreshToken(refreshToken);
+        if (!res) throw new ApiError("Token not valid", 401);
+        return res;
+    },
+    save: async (tokens: ITokenPair, userId: string) => {
+        await tokenRepository.save(tokens, userId);
+    },
+    deleteByRefreshToken: async (refreshToken: string) => {
+        await tokenRepository.deleteByRefreshToken(refreshToken);
+    },
+    deleteByUserId: async (userId: string) => {
+        await tokenRepository.deleteByUserId(userId);
+    },
     generate: (payload: ITokenPayload): ITokenPair => {
         const accessToken = jsonwebtoken.sign(
             payload,
