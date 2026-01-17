@@ -1,7 +1,11 @@
-import { ActionToken } from "../models/action-token.model";
-import { Token } from "../models/token.model";
+import {
+    IUser,
+    SingUpDtoType,
+    UpdateUserDtoType,
+} from "../interfaces/user.interfaces";
+import { ActionToken } from "../models/token-action";
+import { AuthToken } from "../models/token-auth";
 import { User } from "../models/user.model";
-import { IUser, SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 
 export const userRepository = {
     getAll: async (): Promise<IUser[]> => {
@@ -32,7 +36,7 @@ export const userRepository = {
 
     reset: async (): Promise<void> => {
         await User.deleteMany({});
-        await Token.deleteMany({});
+        await AuthToken.deleteMany({});
         await ActionToken.deleteMany({});
     },
 };

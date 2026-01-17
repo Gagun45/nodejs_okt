@@ -1,7 +1,7 @@
 import { RoleEnum } from "../enums/role.enum";
-import { IUser } from "./user.types";
+import { IUser } from "../interfaces/user.interfaces";
 
-export interface ITokenResponse {
+export interface IAuthResponse {
     tokens: ITokenPair;
     user: IUser;
 }
@@ -15,8 +15,11 @@ export interface ITokenPair {
     refreshToken: string;
 }
 
-export interface ITokenDB {
+export interface IAuthToken {
+    _id: string;
     accessToken: string;
     refreshToken: string;
     userId: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
-import { ActionToken } from "../models/action-token.model";
+import { ActionToken } from "../models/token-action";
 import { IActionTokenDB } from "../types/action-token.types";
 import { ITokenPayload } from "../types/token.types";
 

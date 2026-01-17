@@ -1,6 +1,6 @@
 import { model, Schema, Types } from "mongoose";
 
-import { ITokenDB } from "../types/token.types";
+import { IAuthToken } from "../types/token.types";
 import { User } from "./user.model";
 
 const tokenSchema = new Schema(
@@ -15,4 +15,4 @@ const tokenSchema = new Schema(
     },
 );
 
-export const Token = model<ITokenDB>("tokens", tokenSchema);
+export const AuthToken = model<IAuthToken>("tokens", tokenSchema);

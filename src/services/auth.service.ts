@@ -4,16 +4,12 @@ import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import {
-    ITokenPair,
-    ITokenPayload,
-    ITokenResponse,
-} from "../types/token.types";
-import {
     ForgotPasswordSendType,
     ForgotPasswordSetType,
     SingInDtoType,
     SingUpDtoType,
-} from "../types/user.types";
+} from "../interfaces/user.interfaces";
+import { IAuthResponse, ITokenPair, ITokenPayload } from "../types/token.types";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -21,7 +17,7 @@ import { tokenService } from "./token.service";
 import { userService } from "./user.service";
 
 export const authService = {
-    signUp: async (dto: SingUpDtoType): Promise<ITokenResponse> => {
+    signUp: async (dto: SingUpDtoType): Promise<IAuthResponse> => {
         const user = await userService.create(dto);
         const { _id: userId, role } = user;
         const tokens = tokenService.generate({
@@ -92,7 +88,7 @@ export const authService = {
             },
         );
     },
-    signIn: async (dto: SingInDtoType): Promise<ITokenResponse> => {
+    signIn: async (dto: SingInDtoType): Promise<IAuthResponse> => {
         const user = await userService.getByEmail(dto.email);
         const isPasswordCorrect = await passwordService.compare(
             dto.password,

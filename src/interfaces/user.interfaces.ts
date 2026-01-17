@@ -16,9 +16,8 @@ export interface IUser {
 
 export type SingUpDtoType = Pick<IUser, "name" | "age" | "email" | "password">;
 export type SingInDtoType = Pick<IUser, "email" | "password">;
-export type UpdateUserDtoType = Partial<SingUpDtoType>;
+export type UpdateUserDtoType = Partial<IUser>;
 export type ForgotPasswordSendType = Pick<IUser, "email">;
-export type ForgotPasswordSetType = {
+export type ForgotPasswordSetType = Pick<IUser, "password"> & {
     token: string;
-    password: string;
 };

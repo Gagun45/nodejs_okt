@@ -4,21 +4,17 @@ import { config } from "../config/config";
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
 import { tokenRepository } from "../repositories/token.repository";
-import {
-    ITokenPair,
-    ITokenPayload,
-    ITokenResponse,
-} from "../types/token.types";
+import { IAuthResponse, ITokenPair, ITokenPayload } from "../types/token.types";
 
 export const tokenService = {
-    findByAccessToken: async (accessToken: string): Promise<ITokenResponse> => {
+    findByAccessToken: async (accessToken: string): Promise<IAuthResponse> => {
         const res = await tokenRepository.findByAccessToken(accessToken);
         if (!res) throw new ApiError("Token not valid", 401);
         return res;
     },
     findByRefreshToken: async (
         refreshToken: string,
-    ): Promise<ITokenResponse> => {
+    ): Promise<IAuthResponse> => {
         const res = await tokenRepository.findByRefreshToken(refreshToken);
         if (!res) throw new ApiError("Token not valid", 401);
         return res;

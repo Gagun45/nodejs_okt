@@ -1,7 +1,11 @@
 import { ApiError } from "../errors/api-error";
+import {
+    IUser,
+    SingUpDtoType,
+    UpdateUserDtoType,
+} from "../interfaces/user.interfaces";
 import { userRepository } from "../repositories/user.repository";
 import { ITokenPayload } from "../types/token.types";
-import { IUser, SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
 import { passwordService } from "./password.service";
 
 export const userService = {
