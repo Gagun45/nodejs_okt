@@ -11,8 +11,8 @@ import {
 import { tokenRepository } from "../repositories/token.repository";
 
 export const tokenService = {
-    findByParams: async (params: Partial<IAuthToken>): Promise<IAuthToken> => {
-        const res = await tokenRepository.findByParams(params);
+    findOne: async (params: Partial<IAuthToken>): Promise<IAuthToken> => {
+        const res = await tokenRepository.findOne(params);
         if (!res) throw new ApiError("Token not valid", 401);
         return res;
     },
@@ -25,7 +25,7 @@ export const tokenService = {
     deleteMany: async (params: Partial<IAuthToken>) => {
         await tokenRepository.deleteMany(params);
     },
-    generate: (payload: ITokenPayload): ITokenPair => {
+    generatePair: (payload: ITokenPayload): ITokenPair => {
         const accessToken = jsonwebtoken.sign(
             payload,
             config.JWT_ACCESS_SECRET,
@@ -48,10 +48,10 @@ export const tokenService = {
     ): Promise<ITokenPayload> => {
         switch (tokenType) {
             case TokenTypesEnum.ACCESS:
-                await tokenService.findByParams({ accessToken: token });
+                await tokenService.findOne({ accessToken: token });
                 break;
             case TokenTypesEnum.REFRESH:
-                await tokenService.findByParams({ refreshToken: token });
+                await tokenService.findOne({ refreshToken: token });
                 break;
             default:
                 throw new ApiError("Invalid token type", 400);

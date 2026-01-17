@@ -5,7 +5,7 @@ export const tokenRepository = {
     save: async (tokens: ITokenPair, userId: string): Promise<IAuthToken> => {
         return await AuthToken.create({ ...tokens, userId });
     },
-    findByParams: async (
+    findOne: async (
         params: Partial<IAuthToken>,
     ): Promise<IAuthToken | null> => {
         return await AuthToken.findOne(params);

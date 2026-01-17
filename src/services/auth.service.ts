@@ -24,7 +24,7 @@ export const authService = {
     signUp: async (dto: SingUpDtoType): Promise<IAuthResponse> => {
         const user = await userService.create(dto);
         const { _id: userId, role } = user;
-        const tokens = tokenService.generate({
+        const tokens = tokenService.generatePair({
             userId,
             role,
         });
@@ -103,7 +103,7 @@ export const authService = {
         if (!isPasswordCorrect) throw new ApiError("Invalid credentials", 401);
 
         const { _id: userId, role } = user;
-        const tokens = tokenService.generate({
+        const tokens = tokenService.generatePair({
             userId,
             role,
         });
@@ -119,7 +119,7 @@ export const authService = {
         await tokenService.deleteOne({ refreshToken });
 
         //generate new token
-        const tokens = tokenService.generate({
+        const tokens = tokenService.generatePair({
             userId,
             role,
         });
