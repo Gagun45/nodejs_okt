@@ -15,11 +15,10 @@ export const authMiddleware = {
             const accessToken = getBearerToken(req);
             if (!accessToken) throw new ApiError("No token provided", 401);
 
-            const payload = tokenService.verifyToken(
+            const payload = await tokenService.verify(
                 accessToken,
                 TokenTypesEnum.ACCESS,
             );
-            await tokenService.findByAccessToken(accessToken);
             res.locals.jwtPayload = payload;
             next();
         } catch (e) {
@@ -39,15 +38,10 @@ export const authMiddleware = {
             }
 
             //validate token
-            const jwtPayload = tokenService.verifyToken(
+            const jwtPayload = await tokenService.verify(
                 refreshToken,
                 TokenTypesEnum.REFRESH,
             );
-
-            //check if token exists in db
-            const existingToken =
-                await tokenService.findByRefreshToken(refreshToken);
-            if (!existingToken) throw new ApiError("Token invalid", 401);
 
             res.locals.jwtPayload = jwtPayload;
             res.locals.refreshToken = refreshToken;

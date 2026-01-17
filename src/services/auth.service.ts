@@ -10,6 +10,7 @@ import {
 } from "../types/token.types";
 import {
     ForgotPasswordSendType,
+    ForgotPasswordSetType,
     SingInDtoType,
     SingUpDtoType,
 } from "../types/user.types";
@@ -41,7 +42,7 @@ export const authService = {
     },
     forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
         const user = await userService.getByEmail(dto.email);
-        const actionToken = tokenService.generateActionToken(
+        const actionToken = actionTokenService.generateActionToken(
             {
                 role: user.role,
                 userId: user._id,
@@ -62,6 +63,20 @@ export const authService = {
                 frontUrl: config.FRONT_URL,
             },
         );
+    },
+    forgotPasswordSet: async (dto: ForgotPasswordSetType): Promise<void> => {
+        const jwtPayload = await actionTokenService.verify(
+            dto.token,
+            ActionTokenTypesEnum.FORGOT_PASSWORD,
+        );
+        const { userId } = jwtPayload;
+        const password = await passwordService.hash(dto.password);
+        await userService.update(userId, { password });
+        await actionTokenService.deleteManyByParams({
+            userId,
+            type: ActionTokenTypesEnum.FORGOT_PASSWORD,
+        });
+        await tokenService.deleteByUserId(userId);
     },
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
         const { userId } = jwtPayload;

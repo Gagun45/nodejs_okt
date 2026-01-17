@@ -30,9 +30,15 @@ const forgotPasswordSend = Joi.object({
     email: userFields.email.required(),
 });
 
+const forgotPasswordSet = Joi.object({
+    password: userFields.password.required(),
+    token: Joi.string().min(1),
+});
+
 export const userSchemas = {
     signUp,
     signIn,
     update,
     forgotPasswordSend,
+    forgotPasswordSet,
 };

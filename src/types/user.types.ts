@@ -18,3 +18,7 @@ export type SingUpDtoType = Pick<IUser, "name" | "age" | "email" | "password">;
 export type SingInDtoType = Pick<IUser, "email" | "password">;
 export type UpdateUserDtoType = Partial<SingUpDtoType>;
 export type ForgotPasswordSendType = Pick<IUser, "email">;
+export type ForgotPasswordSetType = {
+    token: string;
+    password: string;
+};

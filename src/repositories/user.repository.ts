@@ -1,3 +1,4 @@
+import { ActionToken } from "../models/action-token.model";
 import { Token } from "../models/token.model";
 import { User } from "../models/user.model";
 import { IUser, SingUpDtoType, UpdateUserDtoType } from "../types/user.types";
@@ -32,5 +33,6 @@ export const userRepository = {
     reset: async (): Promise<void> => {
         await User.deleteMany({});
         await Token.deleteMany({});
+        await ActionToken.deleteMany({});
     },
 };

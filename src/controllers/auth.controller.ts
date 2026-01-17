@@ -4,6 +4,7 @@ import { authService } from "../services/auth.service";
 import { ITokenPayload } from "../types/token.types";
 import {
     ForgotPasswordSendType,
+    ForgotPasswordSetType,
     SingInDtoType,
     SingUpDtoType,
 } from "../types/user.types";
@@ -19,11 +20,12 @@ export const authController = {
             next(e);
         }
     },
+
     singIn: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const dto = req.body as SingInDtoType;
             const result = await authService.signIn(dto);
-            res.status(201).json(result);
+            res.status(200).json(result);
         } catch (e) {
             next(e);
         }
@@ -37,6 +39,19 @@ export const authController = {
             const dto = req.body as ForgotPasswordSendType;
             await authService.forgotPasswordSend(dto);
             res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    },
+    forgotPasswordSet: async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const dto = req.body as ForgotPasswordSetType;
+            const result = await authService.forgotPasswordSet(dto);
+            res.status(201).json(result);
         } catch (e) {
             next(e);
         }
