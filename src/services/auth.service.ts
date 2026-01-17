@@ -42,7 +42,7 @@ export const authService = {
     },
     forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
         const user = await userService.getOneByParams({ email: dto.email });
-        const actionToken = actionTokenService.generateActionToken(
+        const actionToken = actionTokenService.generate(
             {
                 role: user.role,
                 userId: user._id,
@@ -65,14 +65,18 @@ export const authService = {
         );
     },
     forgotPasswordSet: async (dto: ForgotPasswordSetType): Promise<void> => {
-        const jwtPayload = await actionTokenService.verify(
-            dto.token,
-            ActionTokenTypesEnum.FORGOT_PASSWORD,
-        );
+        const { token } = dto;
+        const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
+
+        // verify crypto
+        const jwtPayload = await actionTokenService.verify(token, type);
+        // verify if exists in db
+        await actionTokenService.findOne({ token, type });
+
         const { userId } = jwtPayload;
         const password = await passwordService.hash(dto.password);
         await userService.update(userId, { password });
-        await actionTokenService.deleteManyByParams({
+        await actionTokenService.deleteMany({
             userId,
             type: ActionTokenTypesEnum.FORGOT_PASSWORD,
         });

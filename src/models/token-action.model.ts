@@ -1,7 +1,7 @@
 import { model, Schema, Types } from "mongoose";
 
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
-import { IActionTokenDB } from "../types/action-token.types";
+import { IActionToken } from "../interfaces/token-action.interfaces";
 import { User } from "./user.model";
 
 const actionTokenSchema = new Schema(
@@ -16,7 +16,7 @@ const actionTokenSchema = new Schema(
     },
 );
 
-export const ActionToken = model<IActionTokenDB>(
+export const ActionToken = model<IActionToken>(
     "action-tokens",
     actionTokenSchema,
 );

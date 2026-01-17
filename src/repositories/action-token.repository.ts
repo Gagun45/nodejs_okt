@@ -3,22 +3,20 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
+import { IActionToken } from "../interfaces/token-action.interfaces";
 import { ITokenPayload } from "../interfaces/token-auth.interfaces";
 import { ActionToken } from "../models/token-action.model";
-import { IActionTokenDB } from "../types/action-token.types";
 
 export const actionTokenRepository = {
-    save: async (actionToken: IActionTokenDB): Promise<IActionTokenDB> => {
+    save: async (actionToken: IActionToken): Promise<IActionToken> => {
         return await ActionToken.create({ ...actionToken });
     },
-    findByParams: async (
-        params: Partial<IActionTokenDB>,
-    ): Promise<IActionTokenDB | null> => {
+    findOne: async (
+        params: Partial<IActionToken>,
+    ): Promise<IActionToken | null> => {
         return await ActionToken.findOne({ ...params });
     },
-    deleteManyByParams: async (
-        params: Partial<IActionTokenDB>,
-    ): Promise<void> => {
+    deleteMany: async (params: Partial<IActionToken>): Promise<void> => {
         await ActionToken.deleteMany({ ...params });
     },
 
