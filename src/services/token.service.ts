@@ -42,22 +42,10 @@ export const tokenService = {
         );
         return { accessToken, refreshToken };
     },
-    verify: async (
+    verifyJwt: async (
         token: string,
         tokenType: TokenTypesEnum,
     ): Promise<ITokenPayload> => {
-        switch (tokenType) {
-            case TokenTypesEnum.ACCESS:
-                await tokenService.findOne({ accessToken: token });
-                break;
-            case TokenTypesEnum.REFRESH:
-                await tokenService.findOne({ refreshToken: token });
-                break;
-            default:
-                throw new ApiError("Invalid token type", 400);
-        }
-
-        //jwt verifying
         let secretKey = "";
         switch (tokenType) {
             case TokenTypesEnum.ACCESS:

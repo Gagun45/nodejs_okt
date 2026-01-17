@@ -4,7 +4,7 @@ import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/token-auth.interfaces";
-import { ActionToken } from "../models/token-action";
+import { ActionToken } from "../models/token-action.model";
 import { IActionTokenDB } from "../types/action-token.types";
 
 export const actionTokenRepository = {

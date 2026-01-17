@@ -3,8 +3,8 @@ import {
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
-import { ActionToken } from "../models/token-action";
-import { AuthToken } from "../models/token-auth";
+import { ActionToken } from "../models/token-action.model";
+import { AuthToken } from "../models/token-auth.model";
 import { User } from "../models/user.model";
 
 export const userRepository = {
