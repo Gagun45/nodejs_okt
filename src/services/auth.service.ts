@@ -38,7 +38,7 @@ export const authService = {
     },
     logout: async (refreshToken: string): Promise<void> => {
         if (!refreshToken) throw new ApiError("Refresh token is missing", 401);
-        await tokenService.deleteByRefreshToken(refreshToken);
+        await tokenService.deleteOne({ refreshToken });
     },
     forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
         const user = await userService.getOneByParams({ email: dto.email });
@@ -76,14 +76,14 @@ export const authService = {
             userId,
             type: ActionTokenTypesEnum.FORGOT_PASSWORD,
         });
-        await tokenService.deleteByUserId(userId);
+        await tokenService.deleteMany({ userId });
     },
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
         const { userId } = jwtPayload;
 
         const user = await userService.getById(userId);
 
-        await tokenService.deleteByUserId(userId);
+        await tokenService.deleteMany({ userId });
         await emailService.send(
             EmailTypeEnum.LOGOUT,
             config.SMTP_EMAIL, // should be user.email
@@ -116,7 +116,7 @@ export const authService = {
         role: RoleEnum,
     ): Promise<{ tokens: ITokenPair }> => {
         //delete token from db
-        await tokenService.deleteByRefreshToken(refreshToken);
+        await tokenService.deleteOne({ refreshToken });
 
         //generate new token
         const tokens = tokenService.generate({
