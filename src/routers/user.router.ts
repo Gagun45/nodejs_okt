@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { userController } from "../controllers/user.controller";
-import { userSchemas } from "../joi/schemas";
+import { userSchemas } from "../joi/user.schemas";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 

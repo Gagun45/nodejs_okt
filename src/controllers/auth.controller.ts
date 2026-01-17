@@ -24,6 +24,19 @@ export const authController = {
             next(e);
         }
     },
+    forgotPasswordSend: async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const dto = req.body as SingInDtoType;
+            const result = await authService.signIn(dto);
+            res.status(201).json(result);
+        } catch (e) {
+            next(e);
+        }
+    },
     logout: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const refreshToken = getBearerToken(req);
