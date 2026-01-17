@@ -14,10 +14,10 @@ export const actionTokenService = {
     deleteMany: async (params: Partial<IActionToken>): Promise<void> => {
         return await actionTokenRepository.deleteMany(params);
     },
-    findOne: async (
-        params: Partial<IActionToken>,
-    ): Promise<IActionToken | null> => {
-        return await actionTokenRepository.findOne(params);
+    findOne: async (params: Partial<IActionToken>): Promise<IActionToken> => {
+        const existingToken = await actionTokenRepository.findOne(params);
+        if (!existingToken) throw new ApiError("Token invalid", 401);
+        return existingToken;
     },
     verify: async (
         actionToken: string,
