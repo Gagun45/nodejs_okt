@@ -17,8 +17,13 @@ export const userRepository = {
     getById: async (userId: string): Promise<IUser | null> => {
         return await User.findById(userId);
     },
-    getByEmail: async (email: string): Promise<IUser | null> => {
-        return await User.findOne({ email }).select("+password");
+    getOneByParams: async (params: Partial<IUser>): Promise<IUser | null> => {
+        return await User.findOne(params);
+    },
+    getOneByParamsWithPassword: async (
+        params: Partial<IUser>,
+    ): Promise<IUser | null> => {
+        return await User.findOne(params).select("+password");
     },
     delete: async (userId: string): Promise<void | null> => {
         return await User.findByIdAndDelete(userId);

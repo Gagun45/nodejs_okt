@@ -41,7 +41,7 @@ export const authService = {
         await tokenService.deleteByRefreshToken(refreshToken);
     },
     forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
-        const user = await userService.getByEmail(dto.email);
+        const user = await userService.getOneByParams({ email: dto.email });
         const actionToken = actionTokenService.generateActionToken(
             {
                 role: user.role,
@@ -93,7 +93,9 @@ export const authService = {
         );
     },
     signIn: async (dto: SingInDtoType): Promise<IAuthResponse> => {
-        const user = await userService.getByEmail(dto.email);
+        const user = await userService.getOneByParamsWithPassword({
+            email: dto.email,
+        });
         const isPasswordCorrect = await passwordService.compare(
             dto.password,
             user.password,

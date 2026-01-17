@@ -21,8 +21,15 @@ export const userService = {
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
-    getByEmail: async (email: string): Promise<IUser> => {
-        const user = await userRepository.getByEmail(email);
+    getOneByParams: async (params: Partial<IUser>): Promise<IUser> => {
+        const user = await userRepository.getOneByParams(params);
+        if (!user) throw new ApiError("User not found", 404);
+        return user;
+    },
+    getOneByParamsWithPassword: async (
+        params: Partial<IUser>,
+    ): Promise<IUser> => {
+        const user = await userRepository.getOneByParamsWithPassword(params);
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
