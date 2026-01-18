@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import ms from "ms";
 
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
@@ -33,7 +34,7 @@ export const actionTokenService = {
         type: ActionTokenTypesEnum,
     ): string => {
         let secret = "";
-        let expiresIn;
+        let expiresIn: ms.StringValue;
         switch (type) {
             case ActionTokenTypesEnum.FORGOT_PASSWORD:
                 secret = config.JWT_FORGOT_PASSWORD_SECRET;
