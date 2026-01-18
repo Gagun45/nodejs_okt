@@ -33,7 +33,7 @@ export const actionTokenService = {
         type: ActionTokenTypesEnum,
     ): string => {
         let secret = "";
-        let expiresIn = 0;
+        let expiresIn;
         switch (type) {
             case ActionTokenTypesEnum.FORGOT_PASSWORD:
                 secret = config.JWT_FORGOT_PASSWORD_SECRET;
