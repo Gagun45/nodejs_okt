@@ -28,6 +28,7 @@ export const authService = {
             userId,
             role,
         });
+        //create action token
         await tokenService.save(tokens, userId);
         await emailService.send(
             EmailTypeEnum.WELCOME,
@@ -44,7 +45,6 @@ export const authService = {
         const user = await userService.getOneByParams({ email: dto.email });
         const actionToken = actionTokenService.generate(
             {
-                role: user.role,
                 userId: user._id,
             },
             ActionTokenTypesEnum.FORGOT_PASSWORD,

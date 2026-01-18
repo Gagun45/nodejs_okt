@@ -5,3 +5,7 @@ export interface IActionToken {
     type: ActionTokenTypesEnum;
     userId: string;
 }
+
+export interface IActionTokenPayload {
+    userId: string;
+}

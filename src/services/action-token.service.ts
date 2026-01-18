@@ -4,7 +4,10 @@ import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/token.interfaces";
-import { IActionToken } from "../interfaces/token-action.interfaces";
+import {
+    IActionToken,
+    IActionTokenPayload,
+} from "../interfaces/token-action.interfaces";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 
 export const actionTokenService = {
@@ -25,7 +28,10 @@ export const actionTokenService = {
     ): Promise<ITokenPayload> => {
         return await actionTokenRepository.verify(actionToken, type);
     },
-    generate: (payload: ITokenPayload, type: ActionTokenTypesEnum): string => {
+    generate: (
+        payload: IActionTokenPayload,
+        type: ActionTokenTypesEnum,
+    ): string => {
         let secret = "";
         let expiresIn = 0;
         switch (type) {
