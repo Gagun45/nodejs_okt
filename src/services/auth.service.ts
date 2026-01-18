@@ -16,7 +16,7 @@ import {
 } from "../interfaces/user.interfaces";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
-import { passwordService } from "./password.service";
+import { hashService } from "./hash.service";
 import { tokenService } from "./token.service";
 import { userService } from "./user.service";
 
@@ -89,7 +89,7 @@ export const authService = {
         await actionTokenService.findOne({ token, type });
 
         const { userId } = jwtPayload;
-        const password = await passwordService.hash(dto.password);
+        const password = await hashService.hash(dto.password);
         await userService.update(userId, { password });
         await actionTokenService.deleteMany({
             userId,
@@ -115,7 +115,7 @@ export const authService = {
         const user = await userService.getOneByParamsWithPassword({
             email: dto.email,
         });
-        const isPasswordCorrect = await passwordService.compare(
+        const isPasswordCorrect = await hashService.compare(
             dto.password,
             user.password,
         );

@@ -6,14 +6,14 @@ import {
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
 import { userRepository } from "../repositories/user.repository";
-import { passwordService } from "./password.service";
+import { hashService } from "./hash.service";
 
 export const userService = {
     getAll: async (): Promise<IUser[]> => {
         return await userRepository.getAll();
     },
     create: async (dto: SingUpDtoType): Promise<IUser> => {
-        const password = await passwordService.hash(dto.password);
+        const password = await hashService.hash(dto.password);
         return await userRepository.create({ ...dto, password });
     },
     getById: async (userId: string): Promise<IUser> => {
