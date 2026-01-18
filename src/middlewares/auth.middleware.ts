@@ -56,6 +56,23 @@ export const authMiddleware = {
             next(e);
         }
     },
+    checkLogoutRefreshToken: async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            //extract token
+            const refreshToken = getBearerToken(req);
+            if (!refreshToken) {
+                throw new ApiError("No token provided", 401);
+            }
+            res.locals.refreshToken = refreshToken;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
     checkVerifyAccountToken: async (
         req: Request,
         res: Response,

@@ -8,7 +8,6 @@ import { ITokenPayload } from "../interfaces/token.interfaces";
 import { IActionTokenPayload } from "../interfaces/token-action.interfaces";
 import { SingInDtoType, SingUpDtoType } from "../interfaces/user.interfaces";
 import { authService } from "../services/auth.service";
-import { getBearerToken } from "../utils/helper";
 
 export const authController = {
     signUp: async (req: Request, res: Response, next: NextFunction) => {
@@ -67,7 +66,7 @@ export const authController = {
     },
     logout: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const refreshToken = getBearerToken(req);
+            const refreshToken = res.locals.refreshToken as string;
             await authService.logout(refreshToken);
             res.status(200).json({ message: "Logout sucess" });
         } catch (e) {

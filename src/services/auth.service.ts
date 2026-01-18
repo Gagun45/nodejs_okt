@@ -51,10 +51,7 @@ export const authService = {
         );
         return { user, tokens };
     },
-    logout: async (refreshToken: string): Promise<void> => {
-        if (!refreshToken) throw new ApiError("Refresh token is missing", 401);
-        await tokenService.deleteOne({ refreshToken });
-    },
+
     forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
         const user = await userService.getOneByParams({ email: dto.email });
         const actionToken = actionTokenService.generate(
@@ -102,6 +99,9 @@ export const authService = {
             userId,
             type: ActionTokenTypesEnum.VERIFY_ACCOUNT,
         });
+    },
+    logout: async (refreshToken: string): Promise<void> => {
+        await tokenService.deleteOne({ refreshToken });
     },
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
         const { userId } = jwtPayload;
