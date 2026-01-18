@@ -29,11 +29,26 @@ export const authService = {
             role,
         });
         //create action token
+        const verifyToken = actionTokenService.generate(
+            {
+                userId,
+            },
+            ActionTokenTypesEnum.VERIFY_ACCOUNT,
+        );
+        await actionTokenService.save({
+            token: verifyToken,
+            type: ActionTokenTypesEnum.VERIFY_ACCOUNT,
+            userId,
+        });
         await tokenService.save(tokens, userId);
         await emailService.send(
             EmailTypeEnum.WELCOME,
             config.SMTP_EMAIL, // should be user.email
-            { name: user.name },
+            {
+                name: user.name,
+                actionToken: verifyToken,
+                frontUrl: config.FRONT_URL,
+            },
         );
         return { user, tokens };
     },

@@ -39,6 +39,10 @@ export const actionTokenService = {
                 secret = config.JWT_FORGOT_PASSWORD_SECRET;
                 expiresIn = config.JWT_FORGOT_PASSWORD_EXPIRATION;
                 break;
+            case ActionTokenTypesEnum.VERIFY_ACCOUNT:
+                secret = config.JWT_VERIFY_ACCOUNT_SECRET;
+                expiresIn = config.JWT_VERIFY_ACCOUNT_EXPIRATION;
+                break;
             default:
                 throw new ApiError("Invalid token type", 400);
         }

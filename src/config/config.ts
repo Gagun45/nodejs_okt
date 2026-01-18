@@ -20,6 +20,10 @@ export const config = {
     JWT_FORGOT_PASSWORD_EXPIRATION: hoursToSeconds(
         process.env.JWT_FORGOT_PASSWORD_EXPIRATION_IN_HOURS!,
     ), //convert to number of seconds
+    JWT_VERIFY_ACCOUNT_SECRET: process.env.JWT_VERIFY_ACCOUNT_SECRET!,
+    JWT_VERIFY_ACCOUNT_EXPIRATION: hoursToSeconds(
+        process.env.JWT_VERIFY_ACCOUNT_EXPIRATION_IN_HOURS!,
+    ), //convert to number of seconds
     FRONT_URL: process.env.FRONT_URL!,
     SMTP_EMAIL: process.env.SMTP_EMAIL!,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD!,
