@@ -1,41 +1,45 @@
 import Joi from "joi";
 
-const userFields = {
+import { joiHelpers } from "./helper.joi";
+
+const { name, age, email, password } = {
     name: Joi.string().min(3),
     age: Joi.number().integer().min(0),
     email: Joi.string().email(),
     password: Joi.string().min(4),
 };
 
-const signUp = Joi.object({
-    name: userFields.name.required(),
-    age: userFields.age.required(),
-    email: userFields.email.required(),
-    password: userFields.password.required(),
-}).strict();
+const { strictRequired, strict } = joiHelpers;
 
-const signIn = Joi.object({
-    email: userFields.email.required(),
-    password: userFields.password.required(),
-}).strict();
-
-const update = Joi.object({
-    name: userFields.name.optional(),
-    age: userFields.age.optional(),
-    email: userFields.email.optional(),
-    password: userFields.password.optional(),
-}).strict();
-
-const forgotPasswordSend = Joi.object({
-    email: userFields.email.required(),
+const signUp = strictRequired({
+    name,
+    age,
+    email,
+    password,
 });
 
-const forgotPasswordSet = Joi.object({
-    password: userFields.password.required(),
+const signIn = strictRequired({
+    email,
+    password,
+});
+
+const update = strict({
+    name,
+    age,
+    email,
+    password,
+}).min(1);
+
+const forgotPasswordSend = strictRequired({
+    email,
+});
+
+const forgotPasswordSet = strictRequired({
+    password,
     token: Joi.string().min(1),
 });
 
-const verifyAccount = Joi.object({
+const verifyAccount = strictRequired({
     token: Joi.string().min(1),
 });
 
