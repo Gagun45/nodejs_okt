@@ -22,11 +22,11 @@ export const actionTokenService = {
         if (!existingToken) throw new ApiError("Token invalid", 401);
         return existingToken;
     },
-    verify: async (
+    verifyJwt: async (
         actionToken: string,
         type: ActionTokenTypesEnum,
     ): Promise<ITokenPayload> => {
-        return await actionTokenRepository.verify(actionToken, type);
+        return await actionTokenRepository.verifyJwt(actionToken, type);
     },
     generate: (
         payload: IActionTokenPayload,

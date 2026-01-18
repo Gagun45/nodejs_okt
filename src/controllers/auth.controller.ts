@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
     ForgotPasswordSendType,
     ForgotPasswordSetType,
-    SingInDtoType,
-    SingUpDtoType,
-} from "../interfaces/user.interfaces";
+} from "../interfaces/auth.interfaces";
+import { ITokenPayload } from "../interfaces/token.interfaces";
+import { IActionTokenPayload } from "../interfaces/token-action.interfaces";
+import { SingInDtoType, SingUpDtoType } from "../interfaces/user.interfaces";
 import { authService } from "../services/auth.service";
 import { getBearerToken } from "../utils/helper";
 
@@ -52,6 +52,15 @@ export const authController = {
             const dto = req.body as ForgotPasswordSetType;
             const result = await authService.forgotPasswordSet(dto);
             res.status(201).json(result);
+        } catch (e) {
+            next(e);
+        }
+    },
+    verifyAccount: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = res.locals.jwtPayload as IActionTokenPayload;
+            await authService.verifyAccount(userId);
+            res.status(201).json({ message: "User verified success" });
         } catch (e) {
             next(e);
         }

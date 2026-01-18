@@ -4,16 +4,15 @@ import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import {
+    ForgotPasswordSendType,
+    ForgotPasswordSetType,
+} from "../interfaces/auth.interfaces";
+import {
     IAuthResponse,
     ITokenPair,
     ITokenPayload,
 } from "../interfaces/token.interfaces";
-import {
-    ForgotPasswordSendType,
-    ForgotPasswordSetType,
-    SingInDtoType,
-    SingUpDtoType,
-} from "../interfaces/user.interfaces";
+import { SingInDtoType, SingUpDtoType } from "../interfaces/user.interfaces";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
 import { hashService } from "./hash.service";
@@ -84,7 +83,7 @@ export const authService = {
         const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
 
         // verify crypto
-        const jwtPayload = await actionTokenService.verify(token, type);
+        const jwtPayload = await actionTokenService.verifyJwt(token, type);
         // verify if exists in db
         await actionTokenService.findOne({ token, type });
 
@@ -96,6 +95,13 @@ export const authService = {
             type: ActionTokenTypesEnum.FORGOT_PASSWORD,
         });
         await tokenService.deleteMany({ userId });
+    },
+    verifyAccount: async (userId: string): Promise<void> => {
+        await userService.update(userId, { isVerified: true });
+        await actionTokenService.deleteMany({
+            userId,
+            type: ActionTokenTypesEnum.VERIFY_ACCOUNT,
+        });
     },
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
         const { userId } = jwtPayload;

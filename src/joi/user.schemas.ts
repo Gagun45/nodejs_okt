@@ -35,10 +35,15 @@ const forgotPasswordSet = Joi.object({
     token: Joi.string().min(1),
 });
 
+const verifyAccount = Joi.object({
+    token: Joi.string().min(1),
+});
+
 export const userSchemas = {
     signUp,
     signIn,
     update,
     forgotPasswordSend,
     forgotPasswordSet,
+    verifyAccount,
 };

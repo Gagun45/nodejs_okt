@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
+import { VerifyAccountType } from "../interfaces/auth.interfaces";
+import { actionTokenService } from "../services/action-token.service";
 import { tokenService } from "../services/token.service";
 import { getBearerToken } from "../utils/helper";
 
@@ -48,6 +51,28 @@ export const authMiddleware = {
 
             res.locals.jwtPayload = jwtPayload;
             res.locals.refreshToken = refreshToken;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+    checkVerifyAccountToken: async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            //extract token
+            const { token } = req.body as VerifyAccountType;
+            const type = ActionTokenTypesEnum.VERIFY_ACCOUNT;
+
+            //validate token
+            const jwtPayload = await actionTokenService.verifyJwt(token, type);
+
+            await actionTokenService.findOne({ token, type });
+
+            res.locals.jwtPayload = jwtPayload;
+            res.locals.actionToken = token;
             next();
         } catch (e) {
             next(e);

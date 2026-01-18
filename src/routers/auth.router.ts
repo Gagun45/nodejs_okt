@@ -40,4 +40,11 @@ router.put(
     authController.forgotPasswordSet,
 );
 
+router.post(
+    "/verify-account",
+    commonMiddleware.validateBody(userSchemas.verifyAccount),
+    authMiddleware.checkVerifyAccountToken,
+    authController.verifyAccount,
+);
+
 export { router as authRouter };
