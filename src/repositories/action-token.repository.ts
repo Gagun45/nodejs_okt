@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { QueryFilter } from "mongoose";
 
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
@@ -12,12 +13,12 @@ export const actionTokenRepository = {
         return await ActionToken.create({ ...actionToken });
     },
     findOne: async (
-        params: Partial<IActionToken>,
+        filter: QueryFilter<IActionToken>,
     ): Promise<IActionToken | null> => {
-        return await ActionToken.findOne({ ...params });
+        return await ActionToken.findOne(filter);
     },
-    deleteMany: async (params: Partial<IActionToken>): Promise<void> => {
-        await ActionToken.deleteMany({ ...params });
+    deleteMany: async (filter: QueryFilter<IActionToken>): Promise<void> => {
+        await ActionToken.deleteMany(filter);
     },
 
     verifyJwt: async (

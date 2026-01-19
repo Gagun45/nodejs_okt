@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { QueryFilter } from "mongoose";
 import ms from "ms";
 
 import { config } from "../config/config";
@@ -15,11 +16,13 @@ export const actionTokenService = {
     save: async (actionToken: IActionToken): Promise<IActionToken> => {
         return await actionTokenRepository.save(actionToken);
     },
-    deleteMany: async (params: Partial<IActionToken>): Promise<void> => {
-        return await actionTokenRepository.deleteMany(params);
+    deleteMany: async (filter: QueryFilter<IActionToken>): Promise<void> => {
+        return await actionTokenRepository.deleteMany(filter);
     },
-    findOne: async (params: Partial<IActionToken>): Promise<IActionToken> => {
-        const existingToken = await actionTokenRepository.findOne(params);
+    findOne: async (
+        filter: QueryFilter<IActionToken>,
+    ): Promise<IActionToken> => {
+        const existingToken = await actionTokenRepository.findOne(filter);
         if (!existingToken) throw new ApiError("Token invalid", 401);
         return existingToken;
     },
