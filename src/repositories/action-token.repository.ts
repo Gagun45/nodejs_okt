@@ -10,7 +10,7 @@ import { ActionToken } from "../models/token-action.model";
 
 export const actionTokenRepository = {
     save: async (actionToken: IActionToken): Promise<IActionToken> => {
-        return await ActionToken.create({ ...actionToken });
+        return await ActionToken.create(actionToken);
     },
     findOne: async (
         filter: QueryFilter<IActionToken>,
