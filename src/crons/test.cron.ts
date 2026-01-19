@@ -13,10 +13,10 @@ const removeExpiredRefreshTokens = async () => {
     const { deletedCount } = await tokenRepository.deleteMany({
         createdAt: { $lt: date },
     });
-    console.log(`Remove ${deletedCount} expired refresh tokens`);
+    console.log(`Removed ${deletedCount} expired refresh tokens`);
 };
 
 export const cleanupExpriredRefreshTokensJob = new CronJob(
-    "*/5 * * * * *",
+    "0 * * * * *",
     removeExpiredRefreshTokens,
 );
