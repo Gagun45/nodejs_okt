@@ -1,4 +1,5 @@
 import jsonwebtoken from "jsonwebtoken";
+import { QueryFilter } from "mongoose";
 
 import { config } from "../config/config";
 import { TokenTypesEnum } from "../enums/token-types.enum";
@@ -11,19 +12,19 @@ import {
 import { tokenRepository } from "../repositories/token.repository";
 
 export const tokenService = {
-    findOne: async (params: Partial<IToken>): Promise<IToken> => {
-        const res = await tokenRepository.findOne(params);
+    findOne: async (filter: QueryFilter<IToken>): Promise<IToken> => {
+        const res = await tokenRepository.findOne(filter);
         if (!res) throw new ApiError("Token not valid", 401);
         return res;
     },
     save: async (tokens: ITokenPair, userId: string) => {
         await tokenRepository.save(tokens, userId);
     },
-    deleteOne: async (params: Partial<IToken>) => {
-        await tokenRepository.deleteOne(params);
+    deleteOne: async (filter: QueryFilter<IToken>) => {
+        await tokenRepository.deleteOne(filter);
     },
-    deleteMany: async (params: Partial<IToken>) => {
-        await tokenRepository.deleteMany(params);
+    deleteMany: async (filter: QueryFilter<IToken>) => {
+        await tokenRepository.deleteMany(filter);
     },
     generatePair: (payload: ITokenPayload): ITokenPair => {
         const accessToken = jsonwebtoken.sign(
