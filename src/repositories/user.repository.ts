@@ -1,3 +1,5 @@
+import { QueryFilter } from "mongoose";
+
 import {
     IUser,
     SingUpDtoType,
@@ -17,18 +19,18 @@ export const userRepository = {
     getById: async (userId: string): Promise<IUser | null> => {
         return await User.findById(userId);
     },
-    getOneByParams: async (params: Partial<IUser>): Promise<IUser | null> => {
-        return await User.findOne(params);
+    getOne: async (filter: QueryFilter<IUser>): Promise<IUser | null> => {
+        return await User.findOne(filter);
     },
-    getOneByParamsWithPassword: async (
-        params: Partial<IUser>,
+    getOneWithPassword: async (
+        filter: QueryFilter<IUser>,
     ): Promise<IUser | null> => {
-        return await User.findOne(params).select("+password");
+        return await User.findOne(filter).select("+password");
     },
-    delete: async (userId: string): Promise<void | null> => {
+    deleteById: async (userId: string): Promise<void | null> => {
         return await User.findByIdAndDelete(userId);
     },
-    update: async (
+    updateById: async (
         userId: string,
         dto: UpdateUserDtoType,
     ): Promise<IUser | null> => {

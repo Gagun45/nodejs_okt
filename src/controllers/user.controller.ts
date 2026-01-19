@@ -46,7 +46,7 @@ export const userController = {
     delete: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = String(req.params.userId);
-            await userService.delete(userId);
+            await userService.deleteById(userId);
             res.sendStatus(204);
         } catch (e) {
             next(e);
@@ -66,7 +66,7 @@ export const userController = {
         try {
             const userId = String(req.params.userId);
             const dto = req.body as UpdateUserDtoType;
-            const user = await userService.update(userId, dto);
+            const user = await userService.updateById(userId, dto);
             res.status(201).send(user);
         } catch (e) {
             next(e);

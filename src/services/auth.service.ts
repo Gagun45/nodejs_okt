@@ -53,7 +53,7 @@ export const authService = {
     },
 
     forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
-        const user = await userService.getOneByParams({ email: dto.email });
+        const user = await userService.getOne({ email: dto.email });
         const actionToken = actionTokenService.generate(
             {
                 userId: user._id,
@@ -86,7 +86,7 @@ export const authService = {
 
         const { userId } = jwtPayload;
         const password = await hashService.hash(dto.password);
-        await userService.update(userId, { password });
+        await userService.updateById(userId, { password });
         await actionTokenService.deleteMany({
             userId,
             type: ActionTokenTypesEnum.FORGOT_PASSWORD,
@@ -94,7 +94,7 @@ export const authService = {
         await tokenService.deleteMany({ userId });
     },
     verifyAccount: async (userId: string): Promise<void> => {
-        await userService.update(userId, { isVerified: true });
+        await userService.updateById(userId, { isVerified: true });
         await actionTokenService.deleteMany({
             userId,
             type: ActionTokenTypesEnum.VERIFY_ACCOUNT,
@@ -118,7 +118,7 @@ export const authService = {
         );
     },
     signIn: async (dto: SingInDtoType): Promise<IAuthResponse> => {
-        const user = await userService.getOneByParamsWithPassword({
+        const user = await userService.getOneWithPassword({
             email: dto.email,
         });
         const isPasswordCorrect = await hashService.compare(

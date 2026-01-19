@@ -1,3 +1,5 @@
+import { QueryFilter } from "mongoose";
+
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
@@ -21,15 +23,13 @@ export const userService = {
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
-    getOneByParams: async (params: Partial<IUser>): Promise<IUser> => {
-        const user = await userRepository.getOneByParams(params);
+    getOne: async (filter: QueryFilter<IUser>): Promise<IUser> => {
+        const user = await userRepository.getOne(filter);
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
-    getOneByParamsWithPassword: async (
-        params: Partial<IUser>,
-    ): Promise<IUser> => {
-        const user = await userRepository.getOneByParamsWithPassword(params);
+    getOneWithPassword: async (filter: QueryFilter<IUser>): Promise<IUser> => {
+        const user = await userRepository.getOneWithPassword(filter);
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
@@ -38,16 +38,19 @@ export const userService = {
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
-    delete: async (userId: string): Promise<void> => {
-        const deletedUser = await userRepository.delete(userId);
+    deleteById: async (userId: string): Promise<void> => {
+        const deletedUser = await userRepository.deleteById(userId);
         if (!deletedUser) throw new ApiError("User not found", 404);
     },
     deleteMe: async (payload: ITokenPayload): Promise<void> => {
-        const deletedUser = await userRepository.delete(payload.userId);
+        const deletedUser = await userRepository.deleteById(payload.userId);
         if (!deletedUser) throw new ApiError("User not found", 404);
     },
-    update: async (userId: string, dto: UpdateUserDtoType): Promise<IUser> => {
-        const user = await userRepository.update(userId, dto);
+    updateById: async (
+        userId: string,
+        dto: UpdateUserDtoType,
+    ): Promise<IUser> => {
+        const user = await userRepository.updateById(userId, dto);
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
@@ -55,7 +58,7 @@ export const userService = {
         payload: ITokenPayload,
         dto: UpdateUserDtoType,
     ): Promise<IUser> => {
-        const user = await userRepository.update(payload.userId, dto);
+        const user = await userRepository.updateById(payload.userId, dto);
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
