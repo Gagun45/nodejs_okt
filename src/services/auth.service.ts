@@ -4,10 +4,6 @@ import { EmailTypeEnum } from "../enums/email-type.enum";
 import { RoleEnum } from "../enums/role.enum";
 import { ApiError } from "../errors/api-error";
 import {
-    ForgotPasswordSendType,
-    ForgotPasswordSetType,
-} from "../interfaces/auth.interfaces";
-import {
     IAuthResponse,
     ITokenPair,
     ITokenPayload,
@@ -52,57 +48,10 @@ export const authService = {
         return { user, tokens };
     },
 
-    forgotPasswordSend: async (dto: ForgotPasswordSendType): Promise<void> => {
-        const user = await userService.getOne({ email: dto.email });
-        const actionToken = actionTokenService.generate(
-            {
-                userId: user._id,
-            },
-            ActionTokenTypesEnum.FORGOT_PASSWORD,
-        );
-        await actionTokenService.save({
-            token: actionToken,
-            type: ActionTokenTypesEnum.FORGOT_PASSWORD,
-            userId: user._id,
-        });
-        await emailService.send(
-            EmailTypeEnum.FORGOT_PASSWORD,
-            config.SMTP_EMAIL, //shoud be user.email
-            {
-                name: user.name,
-                actionToken,
-                frontUrl: config.FRONT_URL,
-            },
-        );
-    },
-    forgotPasswordSet: async (dto: ForgotPasswordSetType): Promise<void> => {
-        const { token } = dto;
-        const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
-
-        // verify crypto
-        const jwtPayload = await actionTokenService.verifyJwt(token, type);
-        // verify if exists in db
-        await actionTokenService.findOne({ token, type });
-
-        const { userId } = jwtPayload;
-        const password = await hashService.hash(dto.password);
-        await userService.updateById(userId, { password });
-        await actionTokenService.deleteMany({
-            userId,
-            type: ActionTokenTypesEnum.FORGOT_PASSWORD,
-        });
-        await tokenService.deleteMany({ userId });
-    },
-    verifyAccount: async (userId: string): Promise<void> => {
-        await userService.updateById(userId, { isVerified: true });
-        await actionTokenService.deleteMany({
-            userId,
-            type: ActionTokenTypesEnum.VERIFY_ACCOUNT,
-        });
-    },
     logout: async (refreshToken: string): Promise<void> => {
         await tokenService.deleteOne({ refreshToken });
     },
+
     logoutAll: async (jwtPayload: ITokenPayload): Promise<void> => {
         const { userId } = jwtPayload;
 

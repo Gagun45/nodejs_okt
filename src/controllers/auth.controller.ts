@@ -6,8 +6,13 @@ import {
 } from "../interfaces/auth.interfaces";
 import { ITokenPayload } from "../interfaces/token.interfaces";
 import { IActionTokenPayload } from "../interfaces/token-action.interfaces";
-import { SingInDtoType, SingUpDtoType } from "../interfaces/user.interfaces";
+import {
+    ChangePasswordDtoType,
+    SingInDtoType,
+    SingUpDtoType,
+} from "../interfaces/user.interfaces";
 import { authService } from "../services/auth.service";
+import { userService } from "../services/user.service";
 
 export const authController = {
     signUp: async (req: Request, res: Response, next: NextFunction) => {
@@ -36,7 +41,7 @@ export const authController = {
     ) => {
         try {
             const dto = req.body as ForgotPasswordSendType;
-            await authService.forgotPasswordSend(dto);
+            await userService.forgotPasswordSend(dto);
             res.sendStatus(204);
         } catch (e) {
             next(e);
@@ -49,7 +54,7 @@ export const authController = {
     ) => {
         try {
             const dto = req.body as ForgotPasswordSetType;
-            const result = await authService.forgotPasswordSet(dto);
+            const result = await userService.forgotPasswordSet(dto);
             res.status(201).json(result);
         } catch (e) {
             next(e);
@@ -58,7 +63,7 @@ export const authController = {
     verifyAccount: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { userId } = res.locals.jwtPayload as IActionTokenPayload;
-            await authService.verifyAccount(userId);
+            await userService.verifyAccount(userId);
             res.status(201).json({ message: "User verified success" });
         } catch (e) {
             next(e);
@@ -93,6 +98,16 @@ export const authController = {
                 jwtPayload.userId,
                 jwtPayload.role,
             );
+            res.status(201).json(result);
+        } catch (e) {
+            next(e);
+        }
+    },
+    changePassword: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const dto = req.body as ChangePasswordDtoType;
+            const { userId } = res.locals.jwtPayload as ITokenPayload;
+            const result = await userService.changePassword(dto, userId);
             res.status(201).json(result);
         } catch (e) {
             next(e);

@@ -51,4 +51,11 @@ router.post(
     authController.verifyAccount,
 );
 
+router.post(
+    "/change-password",
+    authMiddleware.checkAccessToken,
+    commonMiddleware.validateBody(userSchemas.changePassword),
+    authController.changePassword,
+);
+
 export { router as authRouter };

@@ -43,6 +43,11 @@ const verifyAccount = strictRequired({
     token: Joi.string().min(1),
 });
 
+const changePassword = strictRequired({
+    oldPassword: password,
+    newPassword: password,
+});
+
 export const userSchemas = {
     signUp,
     signIn,
@@ -50,4 +55,5 @@ export const userSchemas = {
     forgotPasswordSend,
     forgotPasswordSet,
     verifyAccount,
+    changePassword,
 };

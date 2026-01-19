@@ -19,6 +19,9 @@ export const userRepository = {
     getById: async (userId: string): Promise<IUser | null> => {
         return await User.findById(userId);
     },
+    getByIdWithPassword: async (userId: string): Promise<IUser | null> => {
+        return await User.findById(userId).select("+password");
+    },
     getOne: async (filter: QueryFilter<IUser>): Promise<IUser | null> => {
         return await User.findOne(filter);
     },
