@@ -1,4 +1,4 @@
-import { QueryFilter } from "mongoose";
+import { DeleteResult, QueryFilter } from "mongoose";
 
 import {
     IUser,
@@ -27,7 +27,7 @@ export const userRepository = {
     ): Promise<IUser | null> => {
         return await User.findOne(filter).select("+password");
     },
-    deleteById: async (userId: string): Promise<void | null> => {
+    deleteById: async (userId: string): Promise<DeleteResult | null> => {
         return await User.findByIdAndDelete(userId);
     },
     updateById: async (

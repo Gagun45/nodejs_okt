@@ -1,4 +1,4 @@
-import { QueryFilter } from "mongoose";
+import { DeleteResult, QueryFilter } from "mongoose";
 
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/token.interfaces";
@@ -38,13 +38,15 @@ export const userService = {
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
-    deleteById: async (userId: string): Promise<void> => {
-        const deletedUser = await userRepository.deleteById(userId);
-        if (!deletedUser) throw new ApiError("User not found", 404);
+    deleteById: async (userId: string): Promise<DeleteResult> => {
+        const deleteResult = await userRepository.deleteById(userId);
+        if (!deleteResult) throw new ApiError("User not found", 404);
+        return deleteResult;
     },
-    deleteMe: async (payload: ITokenPayload): Promise<void> => {
-        const deletedUser = await userRepository.deleteById(payload.userId);
-        if (!deletedUser) throw new ApiError("User not found", 404);
+    deleteMe: async (payload: ITokenPayload): Promise<DeleteResult> => {
+        const deleteResult = await userRepository.deleteById(payload.userId);
+        if (!deleteResult) throw new ApiError("User not found", 404);
+        return deleteResult;
     },
     updateById: async (
         userId: string,

@@ -1,5 +1,6 @@
 import jsonwebtoken from "jsonwebtoken";
-import { QueryFilter } from "mongoose";
+import { DeleteResult, QueryFilter } from "mongoose";
+import ms from "ms";
 
 import { config } from "../config/config";
 import { TokenTypesEnum } from "../enums/token-types.enum";
@@ -17,28 +18,28 @@ export const tokenService = {
         if (!res) throw new ApiError("Token not valid", 401);
         return res;
     },
-    save: async (tokens: ITokenPair, userId: string) => {
-        await tokenRepository.save(tokens, userId);
+    save: async (tokens: ITokenPair, userId: string): Promise<IToken> => {
+        return await tokenRepository.save(tokens, userId);
     },
-    deleteOne: async (filter: QueryFilter<IToken>) => {
-        await tokenRepository.deleteOne(filter);
+    deleteOne: async (filter: QueryFilter<IToken>): Promise<DeleteResult> => {
+        return await tokenRepository.deleteOne(filter);
     },
-    deleteMany: async (filter: QueryFilter<IToken>) => {
-        await tokenRepository.deleteMany(filter);
+    deleteMany: async (filter: QueryFilter<IToken>): Promise<DeleteResult> => {
+        return await tokenRepository.deleteMany(filter);
     },
     generatePair: (payload: ITokenPayload): ITokenPair => {
         const accessToken = jsonwebtoken.sign(
             payload,
             config.JWT_ACCESS_SECRET,
             {
-                expiresIn: config.JWT_ACCESS_EXPIRATION,
+                expiresIn: config.JWT_ACCESS_EXPIRATION as ms.StringValue,
             },
         );
         const refreshToken = jsonwebtoken.sign(
             payload,
             config.JWT_REFRESH_SECRET,
             {
-                expiresIn: config.JWT_REFRESH_EXPIRATION,
+                expiresIn: config.JWT_REFRESH_EXPIRATION as ms.StringValue,
             },
         );
         return { accessToken, refreshToken };

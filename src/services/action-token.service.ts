@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { QueryFilter } from "mongoose";
+import { DeleteResult, QueryFilter } from "mongoose";
 import ms from "ms";
 
 import { config } from "../config/config";
@@ -16,7 +16,9 @@ export const actionTokenService = {
     save: async (actionToken: IActionToken): Promise<IActionToken> => {
         return await actionTokenRepository.save(actionToken);
     },
-    deleteMany: async (filter: QueryFilter<IActionToken>): Promise<void> => {
+    deleteMany: async (
+        filter: QueryFilter<IActionToken>,
+    ): Promise<DeleteResult> => {
         return await actionTokenRepository.deleteMany(filter);
     },
     findOne: async (
@@ -41,11 +43,13 @@ export const actionTokenService = {
         switch (type) {
             case ActionTokenTypesEnum.FORGOT_PASSWORD:
                 secret = config.JWT_FORGOT_PASSWORD_SECRET;
-                expiresIn = config.JWT_FORGOT_PASSWORD_EXPIRATION;
+                expiresIn =
+                    config.JWT_FORGOT_PASSWORD_EXPIRATION as ms.StringValue;
                 break;
             case ActionTokenTypesEnum.VERIFY_ACCOUNT:
                 secret = config.JWT_VERIFY_ACCOUNT_SECRET;
-                expiresIn = config.JWT_VERIFY_ACCOUNT_EXPIRATION;
+                expiresIn =
+                    config.JWT_VERIFY_ACCOUNT_EXPIRATION as ms.StringValue;
                 break;
             default:
                 throw new ApiError("Invalid token type", 400);
