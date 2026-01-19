@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { TokenTypesEnum } from "../enums/token-types.enum";
 import { ApiError } from "../errors/api-error";
+import { getBearerToken } from "../helpers/helper";
 import { VerifyAccountType } from "../interfaces/auth.interfaces";
 import { actionTokenService } from "../services/action-token.service";
 import { tokenService } from "../services/token.service";
-import { getBearerToken } from "../utils/helper";
 
 export const authMiddleware = {
     checkAccessToken: async (

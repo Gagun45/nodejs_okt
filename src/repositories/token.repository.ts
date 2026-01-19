@@ -1,3 +1,5 @@
+import { DeleteResult, QueryFilter } from "mongoose";
+
 import { IToken, ITokenPair } from "../interfaces/token.interfaces";
 import { Token } from "../models/token.model";
 
@@ -8,10 +10,13 @@ export const tokenRepository = {
     findOne: async (params: Partial<IToken>): Promise<IToken | null> => {
         return await Token.findOne(params);
     },
-    deleteOne: async (params: Partial<IToken>): Promise<void> => {
-        await Token.deleteOne(params);
+    findMany: async (filter: QueryFilter<IToken>): Promise<IToken[] | null> => {
+        return await Token.find(filter);
     },
-    deleteMany: async (params: Partial<IToken>): Promise<void> => {
-        await Token.deleteMany(params);
+    deleteOne: async (params: Partial<IToken>): Promise<DeleteResult> => {
+        return await Token.deleteOne(params);
+    },
+    deleteMany: async (filter: QueryFilter<IToken>): Promise<DeleteResult> => {
+        return await Token.deleteMany(filter);
     },
 };

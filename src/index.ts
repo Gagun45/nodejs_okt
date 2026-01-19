@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 
 import { config } from "./config/config";
+import { cronRunner } from "./crons/cron.runner";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { authRouter } from "./routers/auth.router";
 import { userRouter } from "./routers/user.router";
@@ -26,5 +27,6 @@ process.on("uncaughtException", (error) => {
 
 app.listen(APP_PORT, () => {
     mongoose.connect(MONGO_URI!);
+    cronRunner();
     console.log(`App running at http://${APP_HOST}:${APP_PORT}`);
 });
