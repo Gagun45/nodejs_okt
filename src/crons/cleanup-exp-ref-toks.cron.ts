@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { CronJob } from "cron";
-import ms from "ms";
 
 import { config } from "../config/config";
 import { ApiError } from "../errors/api-error";
@@ -10,7 +9,7 @@ import { tokenService } from "../services/token.service";
 const removeExpiredRefreshTokens = async () => {
     try {
         const { unit, value } = timeHelper.parseConfigString(
-            config.JWT_REFRESH_EXPIRATION as ms.StringValue,
+            config.JWT_REFRESH_EXPIRATION,
         );
         const date = timeHelper.subtractByParams(value, unit);
         const { deletedCount } = await tokenService.deleteMany({
