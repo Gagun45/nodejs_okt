@@ -83,14 +83,17 @@ export const userService = {
         file: UploadedFile,
     ): Promise<IUser> => {
         const { userId } = payload;
+        const { avatar: oldAvatar } = await userService.getById(userId);
         const avatar = await s3Service.uploadFile(
             file,
             FileItemTypeEnum.USER,
             userId,
         );
-        const user = await userRepository.updateById(userId, { avatar });
-        if (!user) throw new ApiError("User not found", 404);
-        return user;
+        const updatedUser = await userRepository.updateById(userId, { avatar });
+        if (!updatedUser) throw new ApiError("User not found", 404);
+
+        if (oldAvatar) await s3Service.deleteFile(oldAvatar);
+        return updatedUser;
 
         //TODO delete old avatar from s3 bucket
     },

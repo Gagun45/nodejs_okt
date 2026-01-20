@@ -1,7 +1,12 @@
+/* eslint-disable no-console */
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+    DeleteObjectCommand,
+    PutObjectCommand,
+    S3Client,
+} from "@aws-sdk/client-s3";
 import { UploadedFile } from "express-fileupload";
 
 import { config } from "../config/config";
@@ -42,8 +47,22 @@ export const s3Service = {
                 }),
             );
             return filePath;
-        } catch {
+        } catch (e) {
+            console.error("s3 upload file error: ", e);
             throw new ApiError("Upload error", 500);
+        }
+    },
+    deleteFile: async (filePath: string): Promise<void> => {
+        try {
+            await s3Client.send(
+                new DeleteObjectCommand({
+                    Bucket: config.AWS_S3_BUCKET_NAME,
+                    Key: filePath,
+                }),
+            );
+        } catch (error) {
+            console.error("s3 delete error: ", error);
+            throw new ApiError("Delete file error", 500);
         }
     },
 };
