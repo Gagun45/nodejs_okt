@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import express from "express";
+import fileupload from "express-fileupload";
 import mongoose from "mongoose";
 
 import { config } from "./config/config";
@@ -14,6 +15,7 @@ const { APP_HOST, APP_PORT, MONGO_URI } = config;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(fileupload());
 
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
