@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { FileConfig } from "../config/file.config";
 import { userController } from "../controllers/user.controller";
 import { userSchemas } from "../joi/user.schemas";
 import { authMiddleware } from "../middlewares/auth.middleware";
@@ -23,7 +24,7 @@ router.delete("/me", authMiddleware.checkAccessToken, userController.deleteMe);
 router.post(
     "/me/avatar/upload",
     authMiddleware.checkAccessToken,
-    fileMiddleware.isFileValid(),
+    fileMiddleware.isFileValid(FileConfig.avatar, "avatar"),
     userController.uploadAvatar,
 );
 router.post(
