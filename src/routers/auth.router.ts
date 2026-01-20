@@ -47,7 +47,6 @@ router.put(
 
 router.post(
     "/verify-account",
-    commonMiddleware.validateBody(userSchemas.verifyAccount),
     authMiddleware.checkVerifyAccountToken,
     authController.verifyAccount,
 );
