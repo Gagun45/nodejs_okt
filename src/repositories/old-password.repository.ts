@@ -9,6 +9,11 @@ export const oldPasswordRepository = {
     ): Promise<IOldPassword[]> => {
         return await OldPassword.find(params);
     },
+    findOne: async (
+        params: QueryFilter<IOldPassword>,
+    ): Promise<IOldPassword | null> => {
+        return await OldPassword.findOne(params);
+    },
     deleteMany: async (
         params: QueryFilter<IOldPassword>,
     ): Promise<DeleteResult> => {

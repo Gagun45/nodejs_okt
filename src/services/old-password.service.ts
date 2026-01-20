@@ -7,12 +7,15 @@ export const oldPasswordService = {
         userId: string,
         password: string,
     ): Promise<void> => {
-        const oldPasswords = await oldPasswordRepository.findMany({ userId });
-        for (const { oldPassword } of oldPasswords) {
-            const matched = await hashService.compare(password, oldPassword);
-            if (matched)
-                throw new ApiError("Password was already used recently", 400);
-        }
+        const newHash = await hashService.hash(password);
+
+        const existingPass = await oldPasswordRepository.findOne({
+            oldPassword: newHash,
+            userId,
+        });
+
+        if (existingPass)
+            throw new ApiError("Password was already used recently", 400);
     },
     save: async (userId: string, plainPassword: string): Promise<void> => {
         const hashedPassword = await hashService.hash(plainPassword);
