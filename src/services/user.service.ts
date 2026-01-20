@@ -8,11 +8,7 @@ import { FileItemTypeEnum } from "../enums/file-item-type.enum";
 import { ApiError } from "../errors/api-error";
 import { ForgotPasswordSendType } from "../interfaces/auth.interfaces";
 import { ITokenPayload } from "../interfaces/token.interfaces";
-import {
-    IUser,
-    SingUpDtoType,
-    UpdateUserDtoType,
-} from "../interfaces/user.interfaces";
+import { IUser, SingUpDtoType } from "../interfaces/user.interfaces";
 import { userRepository } from "../repositories/user.repository";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
@@ -66,17 +62,20 @@ export const userService = {
         userId: string,
         params: UpdateQuery<IUser>,
     ): Promise<IUser> => {
-        const user = await userRepository.updateById(userId, params);
-        if (!user) throw new ApiError("User not found", 404);
-        return user;
+        const updatedUser = await userRepository.updateById(userId, params);
+        if (!updatedUser) throw new ApiError("User not found", 404);
+        return updatedUser;
     },
     updateMe: async (
         payload: ITokenPayload,
-        dto: UpdateUserDtoType,
+        params: UpdateQuery<IUser>,
     ): Promise<IUser> => {
-        const user = await userRepository.updateById(payload.userId, dto);
-        if (!user) throw new ApiError("User not found", 404);
-        return user;
+        const updatedUser = await userRepository.updateById(
+            payload.userId,
+            params,
+        );
+        if (!updatedUser) throw new ApiError("User not found", 404);
+        return updatedUser;
     },
     uploadAvatar: async (
         payload: ITokenPayload,
