@@ -4,24 +4,17 @@ import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { EmailTypeEnum } from "../enums/email-type.enum";
 import { ApiError } from "../errors/api-error";
-import {
-    ForgotPasswordSendType,
-    ForgotPasswordSetType,
-} from "../interfaces/auth.interfaces";
+import { ForgotPasswordSendType } from "../interfaces/auth.interfaces";
 import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
-    ChangePasswordDtoType,
     IUser,
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
-import { oldPasswordRepository } from "../repositories/old-password.repository";
 import { userRepository } from "../repositories/user.repository";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
 import { hashService } from "./hash.service";
-import { oldPasswordService } from "./old-password.service";
-import { tokenService } from "./token.service";
 
 export const userService = {
     getAll: async (): Promise<IUser[]> => {
@@ -93,19 +86,6 @@ export const userService = {
         await userRepository.updateById(userId, { password: hashedPassword });
     },
 
-    changePassword: async (
-        { newPassword, oldPassword }: ChangePasswordDtoType,
-        userId: string,
-    ): Promise<void> => {
-        await userService.verifyUserPassword(userId, oldPassword);
-        if (newPassword === oldPassword)
-            throw new ApiError("Password must be different", 400);
-
-        await oldPasswordService.assertNotUsedRecently(userId, newPassword);
-        await oldPasswordService.save(userId, oldPassword);
-
-        await userService.setNewPassword(userId, newPassword);
-    },
     verifyUserPassword: async (
         userId: string,
         plainPassword: string,
@@ -144,35 +124,5 @@ export const userService = {
                 frontUrl: config.FRONT_URL,
             },
         );
-    },
-    forgotPasswordSet: async (dto: ForgotPasswordSetType): Promise<void> => {
-        const { token, password: newPassword } = dto;
-        const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
-
-        // verify crypto
-        const jwtPayload = await actionTokenService.verifyJwt(token, type);
-        // verify if exists in db
-        await actionTokenService.findOne({ token, type });
-
-        const { userId } = jwtPayload;
-        const { password: oldPasswordHashed } =
-            await userService.getByIdWithPassword(userId);
-        const isPasswordsEqual = await hashService.compare(
-            newPassword,
-            oldPasswordHashed,
-        );
-        if (isPasswordsEqual)
-            throw new ApiError("Password must be different", 400);
-
-        await oldPasswordService.assertNotUsedRecently(userId, newPassword);
-        await oldPasswordRepository.save(userId, oldPasswordHashed);
-
-        await userService.setNewPassword(userId, newPassword);
-
-        await actionTokenService.deleteMany({
-            userId,
-            type: ActionTokenTypesEnum.FORGOT_PASSWORD,
-        });
-        await tokenService.deleteMany({ userId });
     },
 };

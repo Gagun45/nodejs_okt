@@ -54,7 +54,7 @@ export const authController = {
     ) => {
         try {
             const dto = req.body as ForgotPasswordSetType;
-            const result = await userService.forgotPasswordSet(dto);
+            const result = await authService.forgotPasswordSet(dto);
             res.status(201).json(result);
         } catch (e) {
             next(e);
@@ -107,7 +107,7 @@ export const authController = {
         try {
             const dto = req.body as ChangePasswordDtoType;
             const { userId } = res.locals.jwtPayload as ITokenPayload;
-            const result = await userService.changePassword(dto, userId);
+            const result = await authService.changePassword(dto, userId);
             res.status(201).json(result);
         } catch (e) {
             next(e);
