@@ -1,5 +1,5 @@
 import { UploadedFile } from "express-fileupload";
-import { DeleteResult, QueryFilter } from "mongoose";
+import { DeleteResult, QueryFilter, UpdateQuery } from "mongoose";
 
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
@@ -64,9 +64,9 @@ export const userService = {
     },
     updateById: async (
         userId: string,
-        dto: UpdateUserDtoType,
+        params: UpdateQuery<IUser>,
     ): Promise<IUser> => {
-        const user = await userRepository.updateById(userId, dto);
+        const user = await userRepository.updateById(userId, params);
         if (!user) throw new ApiError("User not found", 404);
         return user;
     },
@@ -94,8 +94,15 @@ export const userService = {
 
         if (oldAvatar) await s3Service.deleteFile(oldAvatar);
         return updatedUser;
-
-        //TODO delete old avatar from s3 bucket
+    },
+    resetAvatar: async (payload: ITokenPayload): Promise<IUser> => {
+        const { userId } = payload;
+        const { avatar } = await userService.getById(userId);
+        if (avatar) await s3Service.deleteFile(avatar);
+        const updatedUser = await userService.updateById(userId, {
+            $unset: { avatar: 1 },
+        });
+        return updatedUser;
     },
     reset: async (): Promise<void> => {
         await userRepository.reset();

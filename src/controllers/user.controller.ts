@@ -87,10 +87,20 @@ export const userController = {
         try {
             const jwtPayload = res.locals.jwtPayload as ITokenPayload;
             const avatar = req.files?.avatar as UploadedFile;
-            const result = await userService.uploadAvatar(jwtPayload, avatar);
-            res.status(201).json(result);
-            // const user = await userService.updateAvatar(file, userId);
-            // res.status(201).send(user);
+            const updatedUser = await userService.uploadAvatar(
+                jwtPayload,
+                avatar,
+            );
+            res.status(201).json(updatedUser);
+        } catch (e) {
+            next(e);
+        }
+    },
+    resetAvatar: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const jwtPayload = res.locals.jwtPayload as ITokenPayload;
+            const updatedUser = await userService.resetAvatar(jwtPayload);
+            res.status(201).json(updatedUser);
         } catch (e) {
             next(e);
         }

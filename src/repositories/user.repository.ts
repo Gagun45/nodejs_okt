@@ -1,10 +1,6 @@
-import { DeleteResult, QueryFilter } from "mongoose";
+import { DeleteResult, QueryFilter, UpdateQuery } from "mongoose";
 
-import {
-    IUser,
-    SingUpDtoType,
-    UpdateUserDtoType,
-} from "../interfaces/user.interfaces";
+import { IUser, SingUpDtoType } from "../interfaces/user.interfaces";
 import { OldPassword } from "../models/old-password.model";
 import { Token } from "../models/token.model";
 import { ActionToken } from "../models/token-action.model";
@@ -36,13 +32,9 @@ export const userRepository = {
     },
     updateById: async (
         userId: string,
-        dto: UpdateUserDtoType,
+        params: UpdateQuery<IUser>,
     ): Promise<IUser | null> => {
-        return await User.findByIdAndUpdate(
-            userId,
-            { $set: dto },
-            { new: true },
-        );
+        return await User.findByIdAndUpdate(userId, params, { new: true });
     },
 
     reset: async (): Promise<void> => {

@@ -21,10 +21,15 @@ router.patch(
 );
 router.delete("/me", authMiddleware.checkAccessToken, userController.deleteMe);
 router.post(
-    "/me/avatar",
+    "/me/avatar/upload",
     authMiddleware.checkAccessToken,
     fileMiddleware.isFileValid(),
     userController.uploadAvatar,
+);
+router.post(
+    "/me/avatar/reset",
+    authMiddleware.checkAccessToken,
+    userController.resetAvatar,
 );
 
 router.get(
