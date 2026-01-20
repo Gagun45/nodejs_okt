@@ -1,8 +1,10 @@
+import { UploadedFile } from "express-fileupload";
 import { DeleteResult, QueryFilter } from "mongoose";
 
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { EmailTypeEnum } from "../enums/email-type.enum";
+import { FileItemTypeEnum } from "../enums/file-item-type.enum";
 import { ApiError } from "../errors/api-error";
 import { ForgotPasswordSendType } from "../interfaces/auth.interfaces";
 import { ITokenPayload } from "../interfaces/token.interfaces";
@@ -15,6 +17,7 @@ import { userRepository } from "../repositories/user.repository";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
 import { hashService } from "./hash.service";
+import { s3Service } from "./s3.service";
 
 export const userService = {
     getAll: async (): Promise<IUser[]> => {
@@ -74,6 +77,22 @@ export const userService = {
         const user = await userRepository.updateById(payload.userId, dto);
         if (!user) throw new ApiError("User not found", 404);
         return user;
+    },
+    uploadAvatar: async (
+        payload: ITokenPayload,
+        file: UploadedFile,
+    ): Promise<IUser> => {
+        const { userId } = payload;
+        const avatar = await s3Service.uploadFile(
+            file,
+            FileItemTypeEnum.USER,
+            userId,
+        );
+        const user = await userRepository.updateById(userId, { avatar });
+        if (!user) throw new ApiError("User not found", 404);
+        return user;
+
+        //TODO delete old avatar from s3 bucket
     },
     reset: async (): Promise<void> => {
         await userRepository.reset();

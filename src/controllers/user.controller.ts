@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
@@ -78,6 +79,18 @@ export const userController = {
             const dto = req.body as UpdateUserDtoType;
             const user = await userService.updateMe(payload, dto);
             res.status(201).send(user);
+        } catch (e) {
+            next(e);
+        }
+    },
+    uploadAvatar: async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const jwtPayload = res.locals.jwtPayload as ITokenPayload;
+            const avatar = req.files?.avatar as UploadedFile;
+            const result = await userService.uploadAvatar(jwtPayload, avatar);
+            res.status(201).json(result);
+            // const user = await userService.updateAvatar(file, userId);
+            // res.status(201).send(user);
         } catch (e) {
             next(e);
         }
