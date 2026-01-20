@@ -2,7 +2,6 @@
 import { CronJob } from "cron";
 
 import { config } from "../config/config";
-import { ApiError } from "../errors/api-error";
 import { timeHelper } from "../helpers/time.helper";
 import { tokenService } from "../services/token.service";
 
@@ -16,8 +15,8 @@ const removeExpiredRefreshTokens = async () => {
             createdAt: { $lt: date },
         });
         console.log(`Removed ${deletedCount} expired refresh tokens`);
-    } catch {
-        throw new ApiError("CRON remove expired refresh token fail", 500);
+    } catch (e) {
+        console.error("CRON remove expired refresh token fail", e);
     }
 };
 
