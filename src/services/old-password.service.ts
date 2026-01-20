@@ -14,8 +14,8 @@ export const oldPasswordService = {
                 throw new ApiError("Password was already used recently", 400);
         }
     },
-    save: async (userId: string, password: string): Promise<void> => {
-        const hashedPassword = await hashService.hash(password);
+    save: async (userId: string, plainPassword: string): Promise<void> => {
+        const hashedPassword = await hashService.hash(plainPassword);
         await oldPasswordRepository.save(userId, hashedPassword);
     },
 };

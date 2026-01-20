@@ -9,7 +9,13 @@ export const oldPasswordRepository = {
     ): Promise<IOldPassword[]> => {
         return await OldPassword.find(params);
     },
-    save: async (userId: string, password: string): Promise<IOldPassword> => {
-        return await OldPassword.create({ oldPassword: password, userId });
+    save: async (
+        userId: string,
+        hashedPassword: string,
+    ): Promise<IOldPassword> => {
+        return await OldPassword.create({
+            oldPassword: hashedPassword,
+            userId,
+        });
     },
 };

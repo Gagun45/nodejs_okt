@@ -5,6 +5,7 @@ import {
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
+import { OldPassword } from "../models/old-password.model";
 import { Token } from "../models/token.model";
 import { ActionToken } from "../models/token-action.model";
 import { User } from "../models/user.model";
@@ -48,5 +49,6 @@ export const userRepository = {
         await User.deleteMany({});
         await Token.deleteMany({});
         await ActionToken.deleteMany({});
+        await OldPassword.deleteMany({});
     },
 };

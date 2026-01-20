@@ -15,6 +15,7 @@ import {
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
+import { oldPasswordRepository } from "../repositories/old-password.repository";
 import { userRepository } from "../repositories/user.repository";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
@@ -84,17 +85,10 @@ export const userService = {
     reset: async (): Promise<void> => {
         await userRepository.reset();
     },
-    updatePassword: async (
+    setNewPassword: async (
         userId: string,
         newPassword: string,
-        oldPassword: string,
     ): Promise<void> => {
-        if (newPassword === oldPassword)
-            throw new ApiError("Passwords must be different", 400);
-        await oldPasswordService.assertNotUsedRecently(userId, newPassword);
-
-        await oldPasswordService.save(userId, oldPassword);
-
         const hashedPassword = await hashService.hash(newPassword);
         await userRepository.updateById(userId, { password: hashedPassword });
     },
@@ -104,7 +98,13 @@ export const userService = {
         userId: string,
     ): Promise<void> => {
         await userService.verifyUserPassword(userId, oldPassword);
-        await userService.updatePassword(userId, newPassword, oldPassword);
+        if (newPassword === oldPassword)
+            throw new ApiError("Password must be different", 400);
+
+        await oldPasswordService.assertNotUsedRecently(userId, newPassword);
+        await oldPasswordService.save(userId, oldPassword);
+
+        await userService.setNewPassword(userId, newPassword);
     },
     verifyUserPassword: async (
         userId: string,
@@ -146,7 +146,7 @@ export const userService = {
         );
     },
     forgotPasswordSet: async (dto: ForgotPasswordSetType): Promise<void> => {
-        const { token } = dto;
+        const { token, password: newPassword } = dto;
         const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
 
         // verify crypto
@@ -155,9 +155,20 @@ export const userService = {
         await actionTokenService.findOne({ token, type });
 
         const { userId } = jwtPayload;
-        const { password: oldPassword } =
+        const { password: oldPasswordHashed } =
             await userService.getByIdWithPassword(userId);
-        await userService.updatePassword(userId, dto.password, oldPassword);
+        const isPasswordsEqual = await hashService.compare(
+            newPassword,
+            oldPasswordHashed,
+        );
+        if (isPasswordsEqual)
+            throw new ApiError("Password must be different", 400);
+
+        await oldPasswordService.assertNotUsedRecently(userId, newPassword);
+        await oldPasswordRepository.save(userId, oldPasswordHashed);
+
+        await userService.setNewPassword(userId, newPassword);
+
         await actionTokenService.deleteMany({
             userId,
             type: ActionTokenTypesEnum.FORGOT_PASSWORD,
