@@ -95,4 +95,32 @@ export const authMiddleware = {
             next(e);
         }
     },
+    checkForgotPasswordActionToken: async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            //extract token
+            const forgotActionToken = getBearerToken(req);
+            const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
+
+            //validate token
+            const jwtPayload = await actionTokenService.verifyJwt(
+                forgotActionToken,
+                type,
+            );
+
+            //check existance in db
+            await actionTokenService.findOne({
+                token: forgotActionToken,
+                type,
+            });
+
+            res.locals.jwtPayload = jwtPayload;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 };

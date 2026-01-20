@@ -5,7 +5,6 @@ import ms from "ms";
 import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
-import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
     IActionToken,
     IActionTokenPayload,
@@ -31,7 +30,7 @@ export const actionTokenService = {
     verifyJwt: async (
         actionToken: string,
         type: ActionTokenTypesEnum,
-    ): Promise<ITokenPayload> => {
+    ): Promise<IActionTokenPayload> => {
         return await actionTokenRepository.verifyJwt(actionToken, type);
     },
     generate: (

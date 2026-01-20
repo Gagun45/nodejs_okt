@@ -9,6 +9,7 @@ import {
     ITokenPair,
     ITokenPayload,
 } from "../interfaces/token.interfaces";
+import { IActionTokenPayload } from "../interfaces/token-action.interfaces";
 import {
     ChangePasswordDtoType,
     SingInDtoType,
@@ -111,16 +112,13 @@ export const authService = {
         //return new token pair
         return { tokens };
     },
-    forgotPasswordSet: async (dto: ForgotPasswordSetType): Promise<void> => {
-        const { token, password: newPassword } = dto;
-        const type = ActionTokenTypesEnum.FORGOT_PASSWORD;
-
-        // verify crypto
-        const jwtPayload = await actionTokenService.verifyJwt(token, type);
-        // verify if exists in db
-        await actionTokenService.findOne({ token, type });
-
+    forgotPasswordSet: async (
+        dto: ForgotPasswordSetType,
+        jwtPayload: IActionTokenPayload,
+    ): Promise<void> => {
+        const { newPassword } = dto;
         const { userId } = jwtPayload;
+
         const { password: oldPasswordHashed } =
             await userService.getByIdWithPassword(userId);
         const isPasswordsEqual = await hashService.compare(

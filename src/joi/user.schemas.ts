@@ -35,8 +35,7 @@ const forgotPasswordSend = strictRequired({
 });
 
 const forgotPasswordSet = strictRequired({
-    password,
-    token: Joi.string().min(1),
+    newPassword: password,
 });
 
 const verifyAccount = strictRequired({

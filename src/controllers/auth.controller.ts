@@ -54,7 +54,8 @@ export const authController = {
     ) => {
         try {
             const dto = req.body as ForgotPasswordSetType;
-            const result = await authService.forgotPasswordSet(dto);
+            const jwtPayload = res.locals.jwtPayload as IActionTokenPayload;
+            const result = await authService.forgotPasswordSet(dto, jwtPayload);
             res.status(201).json(result);
         } catch (e) {
             next(e);

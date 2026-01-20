@@ -40,6 +40,7 @@ router.post(
 );
 router.put(
     "/forgot-password",
+    authMiddleware.checkForgotPasswordActionToken,
     commonMiddleware.validateBody(userSchemas.forgotPasswordSet),
     authController.forgotPasswordSet,
 );

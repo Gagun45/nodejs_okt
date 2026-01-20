@@ -5,7 +5,10 @@ import { config } from "../config/config";
 import { ActionTokenTypesEnum } from "../enums/action-token-types.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPayload } from "../interfaces/token.interfaces";
-import { IActionToken } from "../interfaces/token-action.interfaces";
+import {
+    IActionToken,
+    IActionTokenPayload,
+} from "../interfaces/token-action.interfaces";
 import { ActionToken } from "../models/token-action.model";
 
 export const actionTokenRepository = {
@@ -26,7 +29,7 @@ export const actionTokenRepository = {
     verifyJwt: async (
         actionToken: string,
         type: ActionTokenTypesEnum,
-    ): Promise<ITokenPayload> => {
+    ): Promise<IActionTokenPayload> => {
         try {
             let secret = "";
             switch (type) {
