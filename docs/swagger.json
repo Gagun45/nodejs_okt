@@ -1,0 +1,130 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A testing API example",
+        "version": "1.0.7",
+        "title": "Express API",
+        "contact": {
+            "email": "selyanchyn45@gmail.com"
+        }
+    },
+    "host": "localhost:3000",
+    "schemes": ["http"],
+    "tags": [
+        {
+            "name": "auth",
+            "description": "Everything related to authentication process"
+        }
+    ],
+    "paths": {
+        "/auth/sign-up": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "register and login",
+                "operationId": "sign-up",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User informaion that needs to be added to the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SignUpUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SignUpApiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "SignUpUser": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "SignUpApiResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/UserResponse"
+                },
+                "tokens": {
+                    "type": "object",
+                    "properties": {
+                        "accessToken": {
+                            "type": "string"
+                        },
+                        "refreshToken": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "UserResponse": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string"
+                },
+                "isVerified": {
+                    "type": "boolean"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string",
+                    "enum": ["user", "admin"]
+                }
+            },
+            "required": ["name", "email", "role", "age", "isVerified"]
+        },
+
+        "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

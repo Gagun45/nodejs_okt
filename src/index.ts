@@ -2,7 +2,9 @@
 import express from "express";
 import fileupload from "express-fileupload";
 import mongoose from "mongoose";
+import swaggerUi from "swagger-ui-express";
 
+import swaggerDocument from "../docs/swagger.json";
 import { config } from "./config/config";
 import { cronRunner } from "./crons/cron.runner";
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -16,6 +18,7 @@ const { APP_HOST, APP_PORT, MONGO_URI } = config;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileupload());
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
