@@ -43,7 +43,7 @@ export interface IUserListQuery {
     orderBy?: UserListOrderByEnum;
 }
 
-export interface IUserListResponse {
+export type UserListResponseType = {
     data: IPublicResDto[];
     total: number;
-}
+} & IUserListQuery;

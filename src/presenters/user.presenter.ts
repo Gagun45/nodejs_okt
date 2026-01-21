@@ -3,7 +3,7 @@ import {
     IPublicResDto,
     IUser,
     IUserListQuery,
-    IUserListResponse,
+    UserListResponseType,
 } from "../interfaces/user.interfaces";
 
 export const userPresenter = {
@@ -22,7 +22,7 @@ export const userPresenter = {
         data: IUser[],
         total: number,
         query: IUserListQuery,
-    ): IUserListResponse => ({
+    ): UserListResponseType => ({
         data: data.map(userPresenter.toPublicResDto),
         total,
         ...query,

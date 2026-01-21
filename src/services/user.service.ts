@@ -11,8 +11,8 @@ import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
     IUser,
     IUserListQuery,
-    IUserListResponse,
     SingUpDtoType,
+    UserListResponseType,
 } from "../interfaces/user.interfaces";
 import { userPresenter } from "../presenters/user.presenter";
 import { userRepository } from "../repositories/user.repository";
@@ -22,7 +22,7 @@ import { hashService } from "./hash.service";
 import { s3Service } from "./s3.service";
 
 export const userService = {
-    getUsers: async (query: IUserListQuery): Promise<IUserListResponse> => {
+    getUsers: async (query: IUserListQuery): Promise<UserListResponseType> => {
         const [entities, total] = await userRepository.getUsers(query);
         return userPresenter.toListResDto(entities, total, query);
     },
