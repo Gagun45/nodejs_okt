@@ -8,7 +8,13 @@ import { FileItemTypeEnum } from "../enums/file-item-type.enum";
 import { ApiError } from "../errors/api-error";
 import { ForgotPasswordSendType } from "../interfaces/auth.interfaces";
 import { ITokenPayload } from "../interfaces/token.interfaces";
-import { IUser, SingUpDtoType } from "../interfaces/user.interfaces";
+import {
+    IUser,
+    IUserListQuery,
+    IUserListResponse,
+    SingUpDtoType,
+} from "../interfaces/user.interfaces";
+import { userPresenter } from "../presenters/user.presenter";
 import { userRepository } from "../repositories/user.repository";
 import { actionTokenService } from "./action-token.service";
 import { emailService } from "./email.service";
@@ -16,8 +22,9 @@ import { hashService } from "./hash.service";
 import { s3Service } from "./s3.service";
 
 export const userService = {
-    getAll: async (): Promise<IUser[]> => {
-        return await userRepository.getAll();
+    getUsers: async (query: IUserListQuery): Promise<IUserListResponse> => {
+        const [entities, total] = await userRepository.getUsers(query);
+        return userPresenter.toListResDto(entities, total, query);
     },
     create: async (dto: SingUpDtoType): Promise<IUser> => {
         const password = await hashService.hash(dto.password);

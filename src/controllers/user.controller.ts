@@ -3,6 +3,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { ITokenPayload } from "../interfaces/token.interfaces";
 import {
+    IUserListQuery,
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
@@ -10,13 +11,11 @@ import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 
 export const userController = {
-    getAll: async (req: Request, res: Response, next: NextFunction) => {
+    getUsers: async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await userService.getAll();
-            const presentedUsers = users.map((user) =>
-                userPresenter.toPublicResDto(user),
-            );
-            res.send(presentedUsers);
+            const query = res.locals.validatedQuery as IUserListQuery;
+            const result = await userService.getUsers(query);
+            res.send(result);
         } catch (error) {
             next(error);
         }

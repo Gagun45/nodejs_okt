@@ -9,12 +9,12 @@ const router = Router();
 
 router.post(
     "/sign-up",
-    commonMiddleware.validateBody(userSchemas.signUp),
+    commonMiddleware.isBodyValid(userSchemas.signUp),
     authController.signUp,
 );
 router.post(
     "/sign-in",
-    commonMiddleware.validateBody(userSchemas.signIn),
+    commonMiddleware.isBodyValid(userSchemas.signIn),
     authController.singIn,
 );
 router.post(
@@ -35,13 +35,13 @@ router.post(
 
 router.post(
     "/forgot-password",
-    commonMiddleware.validateBody(userSchemas.forgotPasswordSend),
+    commonMiddleware.isBodyValid(userSchemas.forgotPasswordSend),
     authController.forgotPasswordSend,
 );
 router.put(
     "/forgot-password",
     authMiddleware.checkForgotPasswordActionToken,
-    commonMiddleware.validateBody(userSchemas.forgotPasswordSet),
+    commonMiddleware.isBodyValid(userSchemas.forgotPasswordSet),
     authController.forgotPasswordSet,
 );
 
@@ -54,7 +54,7 @@ router.post(
 router.post(
     "/change-password",
     authMiddleware.checkAccessToken,
-    commonMiddleware.validateBody(userSchemas.changePassword),
+    commonMiddleware.isBodyValid(userSchemas.changePassword),
     authController.changePassword,
 );
 

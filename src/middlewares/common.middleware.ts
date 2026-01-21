@@ -3,6 +3,7 @@ import { ObjectSchema } from "joi";
 import { isObjectIdOrHexString } from "mongoose";
 
 import { ApiError } from "../errors/api-error";
+import { IUserListQuery } from "../interfaces/user.interfaces";
 
 export const commonMiddleware = {
     isIdValid: (key: string) => {
@@ -17,7 +18,7 @@ export const commonMiddleware = {
             }
         };
     },
-    validateBody: (schema: ObjectSchema) => {
+    isBodyValid: (schema: ObjectSchema) => {
         return (req: Request, res: Response, next: NextFunction) => {
             try {
                 const { error, value } = schema.validate(req.body, {
@@ -25,6 +26,19 @@ export const commonMiddleware = {
                 });
                 if (error) throw new ApiError("Invalid request body", 400);
                 req.body = value;
+                next();
+            } catch (e) {
+                next(e);
+            }
+        };
+    },
+    isQueryValid: (schema: ObjectSchema) => {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                res.locals.validatedQuery = (await schema.validateAsync(
+                    { ...req.query },
+                    { stripUnknown: true },
+                )) as IUserListQuery;
                 next();
             } catch (e) {
                 next(e);

@@ -1,14 +1,43 @@
 import { DeleteResult, QueryFilter, UpdateQuery } from "mongoose";
 
-import { IUser, SingUpDtoType } from "../interfaces/user.interfaces";
+import { OrderEnum } from "../enums/order.enum";
+import { UserListOrderByEnum } from "../enums/user-list-order.enum";
+import {
+    IUser,
+    IUserListQuery,
+    SingUpDtoType,
+} from "../interfaces/user.interfaces";
 import { OldPassword } from "../models/old-password.model";
 import { Token } from "../models/token.model";
 import { ActionToken } from "../models/token-action.model";
 import { User } from "../models/user.model";
 
 export const userRepository = {
-    getAll: async (): Promise<IUser[]> => {
-        return await User.find({});
+    getUsers: async (query: IUserListQuery): Promise<[IUser[], number]> => {
+        const { limit, page, order, orderBy, search } = query;
+
+        const filterObj: QueryFilter<IUser> = {};
+        if (search) {
+            filterObj.name = { $regex: search, $options: "i" };
+        }
+
+        const skip = limit * (page - 1);
+
+        const sortObj: Record<string, 1 | -1> = {};
+        switch (orderBy) {
+            case UserListOrderByEnum.NAME:
+                sortObj.name = order === OrderEnum.DESC ? -1 : 1;
+                break;
+            case UserListOrderByEnum.AGE:
+                sortObj.age = order === OrderEnum.DESC ? -1 : 1;
+                break;
+            default:
+                sortObj.createdAt = -1;
+        }
+        return await Promise.all([
+            User.find(filterObj).sort(sortObj).limit(limit).skip(skip),
+            User.countDocuments(filterObj),
+        ]);
     },
     create: async (dto: SingUpDtoType): Promise<IUser> => {
         return await User.create(dto);

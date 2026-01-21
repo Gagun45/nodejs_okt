@@ -9,7 +9,11 @@ import { fileMiddleware } from "../middlewares/file.middleware";
 
 const router = Router();
 
-router.get("/", userController.getAll);
+router.get(
+    "/",
+    commonMiddleware.isQueryValid(userSchemas.listQuery),
+    userController.getUsers,
+);
 
 router.get("/reset", userController.reset);
 
@@ -17,7 +21,7 @@ router.get("/me", authMiddleware.checkAccessToken, userController.getMe);
 router.patch(
     "/me",
     authMiddleware.checkAccessToken,
-    commonMiddleware.validateBody(userSchemas.update),
+    commonMiddleware.isBodyValid(userSchemas.update),
     userController.updateMe,
 );
 router.delete("/me", authMiddleware.checkAccessToken, userController.deleteMe);

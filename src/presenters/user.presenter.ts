@@ -1,5 +1,10 @@
 import { config } from "../config/config";
-import { IPublicResDto, IUser } from "../interfaces/user.interfaces";
+import {
+    IPublicResDto,
+    IUser,
+    IUserListQuery,
+    IUserListResponse,
+} from "../interfaces/user.interfaces";
 
 export const userPresenter = {
     toPublicResDto: (entity: IUser): IPublicResDto => ({
@@ -12,5 +17,14 @@ export const userPresenter = {
         isVerified: entity.isVerified,
         role: entity.role,
         phone: entity.phone,
+    }),
+    toListResDto: (
+        data: IUser[],
+        total: number,
+        query: IUserListQuery,
+    ): IUserListResponse => ({
+        data: data.map(userPresenter.toPublicResDto),
+        total,
+        ...query,
     }),
 };

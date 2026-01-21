@@ -1,5 +1,7 @@
 import Joi from "joi";
 
+import { OrderEnum } from "../enums/order.enum";
+import { UserListOrderByEnum } from "../enums/user-list-order.enum";
 import { joiHelpers } from "./helper.joi";
 
 const { name, age, email, password } = {
@@ -43,6 +45,14 @@ const changePassword = strictRequired({
     newPassword: password,
 });
 
+const listQuery = Joi.object({
+    limit: Joi.number().min(1).max(100).default(10),
+    page: Joi.number().min(1).default(1),
+    search: Joi.string().trim().lowercase(),
+    order: Joi.string().valid(...Object.values(OrderEnum)),
+    orderBy: Joi.string().valid(...Object.values(UserListOrderByEnum)),
+});
+
 export const userSchemas = {
     signUp,
     signIn,
@@ -50,4 +60,5 @@ export const userSchemas = {
     forgotPasswordSend,
     forgotPasswordSet,
     changePassword,
+    listQuery,
 };
