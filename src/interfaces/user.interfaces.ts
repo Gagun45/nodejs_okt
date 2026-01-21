@@ -25,15 +25,10 @@ export type ChangePasswordDtoType = {
     newPassword: string;
 };
 
-export interface IPublicResDto {
-    age: number;
-    email: string;
-    isVerified: boolean;
-    avatar: string | undefined;
-    phone: string | undefined;
-    name: string;
-    role: RoleEnum;
-}
+export type PublicResDtoType = Pick<
+    IUser,
+    "age" | "avatar" | "email" | "isVerified" | "name" | "phone" | "role"
+>;
 
 export interface IUserListQuery {
     limit: number;
@@ -44,6 +39,6 @@ export interface IUserListQuery {
 }
 
 export type UserListResponseType = {
-    data: IPublicResDto[];
+    data: PublicResDtoType[];
     total: number;
 } & IUserListQuery;

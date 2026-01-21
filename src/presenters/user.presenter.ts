@@ -1,13 +1,13 @@
 import { config } from "../config/config";
 import {
-    IPublicResDto,
     IUser,
     IUserListQuery,
+    PublicResDtoType,
     UserListResponseType,
 } from "../interfaces/user.interfaces";
 
 export const userPresenter = {
-    toPublicResDto: (entity: IUser): IPublicResDto => ({
+    toPublicResDto: (entity: IUser): PublicResDtoType => ({
         name: entity.name,
         age: entity.age,
         avatar: entity.avatar
