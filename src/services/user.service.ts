@@ -88,8 +88,7 @@ export const userService = {
             FileItemTypeEnum.USER,
             userId,
         );
-        const updatedUser = await userRepository.updateById(userId, { avatar });
-        if (!updatedUser) throw new ApiError("User not found", 404);
+        const updatedUser = await userService.updateById(userId, { avatar });
 
         if (oldAvatar) await s3Service.deleteFile(oldAvatar);
         return updatedUser;
