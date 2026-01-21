@@ -39,7 +39,39 @@
                     "201": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/SignUpApiResponse"
+                            "$ref": "#/definitions/SignInResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        },
+        "/auth/sign-in": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "login",
+                "operationId": "sign-in",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Sign in credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SignInCredentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/SignInResponse"
                         }
                     },
                     "400": {
@@ -69,22 +101,36 @@
                 }
             }
         },
-        "SignUpApiResponse": {
+        "SignInCredentials": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Tokens": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "SignInResponse": {
             "type": "object",
             "properties": {
                 "user": {
                     "$ref": "#/definitions/UserResponse"
                 },
                 "tokens": {
-                    "type": "object",
-                    "properties": {
-                        "accessToken": {
-                            "type": "string"
-                        },
-                        "refreshToken": {
-                            "type": "string"
-                        }
-                    }
+                    "$ref": "#/definitions/Tokens"
                 }
             }
         },
