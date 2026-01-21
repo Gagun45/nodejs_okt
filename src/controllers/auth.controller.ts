@@ -11,6 +11,7 @@ import {
     SingInDtoType,
     SingUpDtoType,
 } from "../interfaces/user.interfaces";
+import { userPresenter } from "../presenters/user.presenter";
 import { authService } from "../services/auth.service";
 import { userService } from "../services/user.service";
 
@@ -19,7 +20,9 @@ export const authController = {
         try {
             const dto = req.body as SingUpDtoType;
             const result = await authService.signUp(dto);
-            res.status(201).json(result);
+            const presentedUser = userPresenter.toPublicResDto(result.user);
+            const response = { ...result, user: presentedUser };
+            res.status(201).json(response);
         } catch (e) {
             next(e);
         }
@@ -29,7 +32,9 @@ export const authController = {
         try {
             const dto = req.body as SingInDtoType;
             const result = await authService.signIn(dto);
-            res.status(200).json(result);
+            const presentedUser = userPresenter.toPublicResDto(result.user);
+            const response = { ...result, user: presentedUser };
+            res.status(200).json(response);
         } catch (e) {
             next(e);
         }
@@ -55,8 +60,8 @@ export const authController = {
         try {
             const dto = req.body as ForgotPasswordSetType;
             const jwtPayload = res.locals.jwtPayload as IActionTokenPayload;
-            const result = await authService.forgotPasswordSet(dto, jwtPayload);
-            res.status(201).json(result);
+            await authService.forgotPasswordSet(dto, jwtPayload);
+            res.status(201).json({ message: "New password set successfully" });
         } catch (e) {
             next(e);
         }
@@ -65,7 +70,7 @@ export const authController = {
         try {
             const { userId } = res.locals.jwtPayload as IActionTokenPayload;
             await userService.verifyAccount(userId);
-            res.status(201).json({ message: "User verified success" });
+            res.status(201).json({ message: "User verified successfully" });
         } catch (e) {
             next(e);
         }
@@ -108,8 +113,8 @@ export const authController = {
         try {
             const dto = req.body as ChangePasswordDtoType;
             const { userId } = res.locals.jwtPayload as ITokenPayload;
-            const result = await authService.changePassword(dto, userId);
-            res.status(201).json(result);
+            await authService.changePassword(dto, userId);
+            res.status(201).json({ message: "Password changed successfully" });
         } catch (e) {
             next(e);
         }

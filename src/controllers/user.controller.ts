@@ -6,13 +6,17 @@ import {
     SingUpDtoType,
     UpdateUserDtoType,
 } from "../interfaces/user.interfaces";
+import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 
 export const userController = {
     getAll: async (req: Request, res: Response, next: NextFunction) => {
         try {
             const users = await userService.getAll();
-            res.send(users);
+            const presentedUsers = users.map((user) =>
+                userPresenter.toPublicResDto(user),
+            );
+            res.send(presentedUsers);
         } catch (error) {
             next(error);
         }
@@ -21,7 +25,8 @@ export const userController = {
         try {
             const dto = req.body as SingUpDtoType;
             const newUser = await userService.create(dto);
-            res.status(201).send(newUser);
+            const response = userPresenter.toPublicResDto(newUser);
+            res.status(201).send(response);
         } catch (error) {
             next(error);
         }
@@ -30,7 +35,8 @@ export const userController = {
         try {
             const userId = String(req.params.userId);
             const user = await userService.getById(userId);
-            res.send(user);
+            const response = userPresenter.toPublicResDto(user);
+            res.send(response);
         } catch (e) {
             next(e);
         }
@@ -39,7 +45,8 @@ export const userController = {
         try {
             const payload = res.locals.jwtPayload as ITokenPayload;
             const user = await userService.getMe(payload);
-            res.send(user);
+            const response = userPresenter.toPublicResDto(user);
+            res.send(response);
         } catch (e) {
             next(e);
         }
@@ -67,8 +74,10 @@ export const userController = {
         try {
             const userId = String(req.params.userId);
             const dto = req.body as UpdateUserDtoType;
-            const user = await userService.updateById(userId, dto);
-            res.status(201).send(user);
+            const updatedUser = await userService.updateById(userId, dto);
+            const response = userPresenter.toPublicResDto(updatedUser);
+
+            res.status(201).send(response);
         } catch (e) {
             next(e);
         }
@@ -77,8 +86,9 @@ export const userController = {
         try {
             const payload = res.locals.jwtPayload as ITokenPayload;
             const dto = req.body as UpdateUserDtoType;
-            const user = await userService.updateMe(payload, dto);
-            res.status(201).send(user);
+            const updatedUser = await userService.updateMe(payload, dto);
+            const response = userPresenter.toPublicResDto(updatedUser);
+            res.status(201).send(response);
         } catch (e) {
             next(e);
         }
@@ -91,7 +101,8 @@ export const userController = {
                 jwtPayload,
                 avatar,
             );
-            res.status(201).json(updatedUser);
+            const response = userPresenter.toPublicResDto(updatedUser);
+            res.status(201).json(response);
         } catch (e) {
             next(e);
         }
@@ -100,7 +111,8 @@ export const userController = {
         try {
             const jwtPayload = res.locals.jwtPayload as ITokenPayload;
             const updatedUser = await userService.resetAvatar(jwtPayload);
-            res.status(201).json(updatedUser);
+            const response = userPresenter.toPublicResDto(updatedUser);
+            res.status(201).json(response);
         } catch (e) {
             next(e);
         }

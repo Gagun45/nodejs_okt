@@ -22,3 +22,13 @@ export type ChangePasswordDtoType = {
     oldPassword: string;
     newPassword: string;
 };
+
+export interface IPublicResDto {
+    age: number;
+    email: string;
+    isVerified: boolean;
+    avatar: string | undefined;
+    phone: string | undefined;
+    name: string;
+    role: RoleEnum;
+}

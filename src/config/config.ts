@@ -24,4 +24,5 @@ export const config = {
     AWS_S3_BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME!,
     AWS_S3_REGION: process.env.AWS_S3_REGION!,
     AWS_S3_ACL: process.env.AWS_S3_ACL! as ObjectCannedACL,
+    AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT!,
 };
