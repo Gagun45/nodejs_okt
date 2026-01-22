@@ -80,6 +80,242 @@
                     }
                 }
             }
+        },
+        "/auth/refresh": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Refresh token",
+                "operationId": "refresh",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "description": "Requires REFRESH token in Authorization header",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Token refreshed",
+                        "schema": {
+                            "$ref": "#/definitions/Tokens"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Logout from current device",
+                "operationId": "logout",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "description": "Requires REFRESH token in Authorization header",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logout success",
+                        "schema": {
+                            "$ref": "#/definitions/MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        },
+        "/auth/logout-all": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Logout from all devices",
+                "operationId": "logout-all",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "description": "Requires ACCESS token in Authorization header",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logout success",
+                        "schema": {
+                            "$ref": "#/definitions/MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        },
+        "/auth/forgot-password": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Get the reset-password link on the specified email",
+                "operationId": "forgot-password",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Specify email",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": ["email"],
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "example": "user@example.com"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Reset link sent to the email"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["auth"],
+                "summary": "Set new password during forgot-password flow",
+                "operationId": "forgot-password",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Specify new password",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": ["newPassword"],
+                            "properties": {
+                                "newPassword": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires FORGOT_PASSWORD token in Authorization header",
+                "responses": {
+                    "201": {
+                        "description": "New password set",
+                        "schema": {
+                            "$ref": "#/definitions/MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        },
+        "/auth/verify-account": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Verify account",
+                "operationId": "verify-account",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "description": "Requires VERIFY_ACCOUNT token in Authorization header",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Account verified"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        },
+        "/auth/change-password": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Change account password",
+                "operationId": "change-password",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "description": "Requires ACCESS token in Authorization header",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Provide old and new passwords",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": ["oldPassword", "newPassword"],
+                            "properties": {
+                                "oldPassword": {
+                                    "type": "string"
+                                },
+                                "newPassword": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Password changed successfully"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": { "$ref": "#/definitions/ErrorResponse" }
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer token. Format: Bearer <token>"
         }
     },
     "definitions": {
@@ -105,7 +341,9 @@
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
                 },
                 "password": {
                     "type": "string"
@@ -163,8 +401,15 @@
             },
             "required": ["name", "email", "role", "age", "isVerified"]
         },
-
         "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "MessageResponse": {
             "type": "object",
             "properties": {
                 "message": {
